@@ -1,0 +1,828 @@
+# OpenInfer — Final Roadmap (v3): LLM Serving Platform + Educational Inference Runtime
+
+Your goal is to build a small-scale LLM serving platform that lets users access a language model through an API, while you control and measure how requests are processed.
+
+This is not a chatbot, RAG, or agent project. It has two deliberately staged tracks:
+1. A usable serving platform built around an existing runtime (vLLM) so the end-to-end system works early.
+2. A separate educational inference runtime, developed progressively with Python/PyTorch and existing tensor/model libraries, so you can manually implement and test selected inference components.
+
+Do not begin by attempting to replace vLLM internals. First establish a working baseline, then implement simplified components behind a common backend interface. Later, investigate whether a specific component can be integrated into vLLM itself; that is an advanced, optional stage, not a prerequisite.
+
+The project complements your arXiv Curator / Agentic RAG project: one demonstrates AI applications; this one demonstrates model serving and progressively deeper inference-systems work.
+
+## Project target
+
+### OpenInfer — LLM Inference & Serving Platform + Educational Runtime
+
+Python · FastAPI · PyTorch · Hugging Face Transformers · vLLM · OpenAI-compatible API · optional Cloudflare Tunnel · Colab T4 · Docker · Benchmarking
+
+The name OpenInfer is the working name for this portfolio project, not a claim that it is an existing or production-grade inference engine.
+
+A user receives an API key, configures your endpoint, and calls your model through the standard OpenAI Python SDK. Behind that interface, your system handles requests, manages concurrency, records performance metrics, and runs controlled inference experiments.
+
+First milestone
+
+Working model API
+
+Main engineering goal
+
+Efficient concurrent serving
+
+Demo
+
+Session-based live API + load test (not always-on hosting)
+
+Estimated timeline
+
+Track A (working serving platform): roughly 6–8 weeks.
+Track B (educational inference runtime): an additional 4–8+ weeks after Track A.
+Optional deep vLLM integration, custom GPU kernels or multi-GPU work: no fixed deadline.
+These are planning estimates at roughly 2–4 focused hours/day, not promises. The first complete portfolio project is Track A.
+
+## 1. The final architecture (revised for zero-budget remote GPU experiments)
+
+Development and CPU test mode:
+
+Client / OpenAI SDK -> FastAPI gateway (VS Code / Codespaces) -> mock or lightweight CPU backend -> response
+
+Temporary GPU demo mode, ONLY when the runtime and service terms permit it:
+
+Client / OpenAI SDK -> FastAPI gateway (Codespaces) -> HTTPS backend adapter -> Cloudflare Tunnel -> vLLM on Google Colab T4 -> response
+
+Fallback GPU integration mode (no tunnel):
+
+Run FastAPI gateway + vLLM + benchmark client together inside the same interactive Colab session. This is the preferred reproducible GPU test path if tunneling is unavailable or restricted.
+
+Gateway responsibilities:
+- OpenAI-compatible routes, API key verification, request validation, model registry and routing.
+- Admission control, bounded pending work, deadlines, cancellation, rate limiting and errors.
+- Gateway-level metrics and request correlation IDs; forward requests to backend with async HTTP.
+- Never confuse asynchronous HTTP concurrency with parallel model execution.
+
+GPU backend responsibilities:
+- vLLM runs the model on the Colab T4, managing its own continuous batching and KV cache.
+- Start with ONE compatible small instruct model (for example Qwen2.5-1.5B-Instruct), subject to runtime/version compatibility and memory limits.
+- Model weights are loaded from Hugging Face or optional Drive storage into runtime RAM/VRAM; Google Drive does not execute inference.
+- Model registry should advertise only currently available model IDs; additional models may require loading/reloading, which takes time.
+
+Network and policy boundaries:
+- A tunnel is a connectivity technique, NOT a guarantee that Colab Free permits remote web-service use. Respect Colab policies and runtime limits; do not depend on tunnels as a permanent hosted service.
+- Quick Tunnel URLs change between sessions. Store the URL in BACKEND_BASE_URL rather than source code. Do not infer a stable API URL from browser DevTools.
+- Test non-streaming first. Verify SSE/token streaming end-to-end on the actual tunnel setup; Quick Tunnel limitations may prevent reliable SSE.
+- Protect backend access with an internal secret or access policy; never expose an unauthenticated inference server. Do not forward user API keys to vLLM as backend credentials.
+- No paid hosting or 24/7 SLA is assumed. Save reproducible benchmark results and a demo video.
+
+Measurement boundaries:
+- Measure end-to-end client latency, gateway queue wait, gateway-to-backend overhead, and backend/model execution separately wherever possible.
+- Compare direct vLLM requests inside Colab with requests through gateway+tunnel using equivalent workloads.
+- Attribute vLLM batching/KV-cache optimizations to vLLM, not to custom gateway code.
+
+One crucial architectural distinction: build the serving control layer, not a competing vLLM scheduler. Add your own scheduling only for a specific, measurable admission/queueing problem.
+
+## Revised implementation sequence (the detailed phases below remain the learning reference)
+
+### Track A — Working serving platform (approximately Weeks 1–8; 6–8 week target)
+- Week 1: Validate a small model on Colab T4, record a baseline, create a mock gateway.
+- Week 2: FastAPI backend interface, OpenAI-compatible schemas, model registry.
+- Week 3: Remote HTTP adapter, backend credentials, optional tunnel configuration, health/failure handling.
+- Week 4: API keys, streaming validation, request IDs, error contracts.
+- Week 5: Bounded queue, deadlines, admission control, cancellation and load tests.
+- Week 6: Concurrency and vLLM batching experiments; direct vs gateway/remote measurements.
+- Week 7: KV-cache, context-length and quantization experiments using runtime-supported settings.
+- Week 8: Metrics, TTFT, TPOT, GPU memory, targeted profiling, dashboard basics, reliability and benchmark report.
+
+### Track B — Educational OpenInfer runtime (start after Track A; additional 4–8+ weeks, flexible)
+- Stage 1: Implement a small model runner using existing model/tensor libraries; verify output correctness against a reference implementation.
+- Stage 2: Add a clear prefill/decode loop for a small supported model, documenting which work is delegated to Transformers/PyTorch.
+- Stage 3: Build a simple sequential scheduler, then static batching, then dynamic batch formation. Validate correctness and trade-offs at each stage.
+- Stage 4: Inspect an existing library KV cache and its shapes first; then independently implement a small attention-module cache storing and updating K/V tensors. Test against uncached generation. Only extend to a full small-model cache if feasible.
+- Stage 5 (optional advanced): Attempt simplified continuous batching only after sequential/static/dynamic batching and per-sequence state are correct; do not make continuous batching a mandatory deliverable.
+- Stage 6: Compare the educational runtime with vLLM using matched prompts, context/output lengths and concurrency. Explain the gap rather than expecting to beat vLLM.
+- Stage 7 (optional advanced): Explore a narrowly scoped integration with vLLM internals only after understanding its extension points and version-specific architecture. Keep a fork/patch isolated and maintain the independent educational runtime as a fallback.
+- Stage 8 (optional advanced): Triton/CUDA kernels or multi-GPU work only if they become a deliberate career priority and suitable hardware is available. Basic performance profiling is part of Track A, not deferred to this stage.
+
+Do not treat these time estimates as fixed deadlines. Track B starts after Track A passes its acceptance tests; it is an additional learning track and may take longer than the serving gateway.
+
+The following numbered phases are conceptual learning blocks; their original calendar labels are approximate and can overlap with this reordered implementation schedule.
+
+## 2. The complete roadmap, phase by phase
+
+The schedule below assumes you're learning concepts while implementing them. Each phase ends with something you can run, test, or explain.
+
+## 01
+
+Days 1–5
+
+### Understand inference and establish a baseline on the Colab T4
+
+Learn
+
+- What a tokenizer, model weights, logits, and generated tokens are.
+- Autoregressive generation: the model generates one token at a time.
+- Prefill versus decode, TTFT, tokens/sec, and KV cache.
+- Model parameters, context length, RAM, and VRAM requirements.
+
+Build
+
+- Run a small pretrained model locally if feasible, and validate a small Qwen instruct model on the Colab T4 early; record environment and dependency versions.
+- Write a Python script that accepts a prompt and returns generated text.
+- Record generation time, output token count, model loading time, and memory where measurable.
+
+Deliverable: A baseline inference script and a benchmark record. You now understand what you're trying to serve.
+
+## 02
+
+Week 1–2
+
+### Build your first inference API with a pluggable backend
+
+Learn
+
+- HTTP requests, JSON, REST endpoints, FastAPI, Pydantic.
+- Synchronous versus asynchronous functions.
+- Model loading once at backend startup instead of once per request; mock backend vs remote backend.
+
+Build
+
+- `GET /health`
+- `POST /generate`
+- Input validation, generation parameters, error handling.
+- Request IDs, structured logs, and a backend abstraction; keep model loading in the model runtime, not the gateway.
+
+Deliverable: A client can send a prompt to the gateway and receive a mock/CPU response, then a real GPU-generated response in the Colab integration test.
+
+Success test: Stop the server, restart it, and call the endpoint using `curl` or Python. It must work reliably.
+
+## 03
+
+Week 2
+
+### Make the gateway OpenAI-compatible
+
+Learn
+
+- API contracts, request/response schemas, streaming over HTTP.
+- Authentication and API key verification.
+
+Build
+
+- `POST /v1/chat/completions`
+- `GET /v1/models`
+- Standard `messages`, `model`, `max_tokens` or equivalent supported generation settings.
+- Non-streaming responses first, then streaming responses using Server-Sent Events (SSE).
+- API keys, rate limits, request validation, and appropriate error responses. Keep a separate backend credential for the remote runtime.
+
+Deliverable: A client can use the OpenAI Python SDK with your custom `base_url`.
+
+```
+from openai import OpenAIclient = OpenAI(    api_key="your-demo-key",    base_url="http://localhost:8000/v1")response = client.chat.completions.create(    model="my-model",    messages=[        {"role": "user", "content": "Explain RAG"}    ])print(response.choices[0].message.content)
+```
+
+The endpoint and response format must match the SDK contract; simply naming your route `/v1/chat/completions` does not make it compatible.
+
+## 04
+
+Week 3
+
+### Implement request lifecycle, remote-backend reliability, and concurrency controls
+
+Learn
+
+- Python `asyncio`, tasks, semaphores, locks, and queues.
+- Why asynchronous HTTP handling doesn't automatically make model generation concurrent.
+- Timeouts, cancellation, admission control, and backpressure.
+
+Build
+
+- Track each request through accepted, queued, running, completed, failed, or cancelled states.
+- Bound the number of pending requests.
+- Add queue limits, request deadlines, and overload responses.
+- Prevent concurrent calls from overwhelming the backend; vLLM handles its internal GPU scheduler.
+- Add backend health checks, connect/read timeouts, safe retry policies (avoid blindly retrying a generation), and explicit 502/503/504 responses when remote Colab disconnects.
+- Handle client cancellation and propagate disconnects to the remote request where supported.
+
+Deliverable: The server handles several incoming clients without becoming an uncontrolled pile of generation jobs.
+
+Important: A Python async endpoint alone does not provide parallel GPU inference. The model backend and its execution model determine how generation is scheduled.
+
+## 05
+
+Weeks 3–5
+
+### Study batching and scheduling
+
+This is one of the most important phases, but don't try to build a production-grade continuous batcher immediately.
+
+Learn
+
+- Sequential execution versus concurrent arrivals.
+- Static batching versus dynamic batching versus continuous batching.
+- Queue wait time, batch formation delay, throughput, and tail latency.
+- Prefill/decode differences and why requests of different lengths complicate batching.
+
+Build in two steps
+
+1. Create a small, controlled batching experiment or simulator. Compare individual execution with grouping requests, using a backend that supports the experiment.
+2. Integrate vLLM later and measure its built-in scheduling and continuous batching under concurrent load.
+
+Experiments
+
+- Vary concurrency: 1, 4, 8, 16 requests.
+- Vary prompt length and output length.
+- Measure requests/sec, output tokens/sec, TTFT, p95 latency, errors, and queue wait time.
+- Run direct-backend and gateway+tunnel benchmarks separately to expose network overhead.
+- Compare throughput gains against latency costs.
+
+Deliverable: A benchmark report explaining when batching helps, when it hurts, and why.
+
+## 06
+
+Weeks 5–6
+
+### Understand KV cache and quantization
+
+Learn
+
+- Why attention normally needs information from previous tokens.
+- How the KV cache avoids recomputing keys and values during ordinary autoregressive decoding.
+- Why KV cache consumes memory and grows with active sequence lengths.
+- Model-weight quantization versus KV-cache quantization.
+
+Build
+
+- First inspect an existing backend-supported cache and compare cached/uncached generation when the chosen backend exposes that control; this is a library feature you evaluated, not a manual KV-cache implementation.
+- Measure latency and memory as prompt/context length increases.
+- Compare supported model quantizations, such as FP16 and 4-bit/8-bit weights, where the hardware and runtime allow it.
+- Track response quality as well as speed and memory.
+
+Deliverable: Reproducible experiments and an explanation of the performance/memory/quality trade-offs.
+
+Scope boundary: Use backend-supported caching and quantization first. Don't implement a KV-cache allocator or custom quantization kernels.
+
+## 07
+
+Weeks 6–7
+
+### Add metrics and observability
+
+Learn
+
+- Instrumentation, metrics, percentiles, traces, and structured logs.
+- The difference between request latency and token-generation latency; separate tunnel/network overhead from GPU inference.
+
+Measure
+
+- Time to first token (TTFT).
+- Inter-token latency / time per output token (TPOT).
+- End-to-end latency and p50/p95/p99.
+- Input/output tokens per second.
+- Queue depth, queue wait, active requests, error rate, backend availability and remote HTTP failures.
+- RAM/VRAM and CPU/GPU utilization where available.
+
+Build
+
+- A metrics endpoint and a simple dashboard.
+- A request-level record connecting each request to its latency and outcome.
+- Charts for concurrency, throughput, latency, and errors.
+
+Deliverable: An interviewer can see what the server is doing instead of taking performance claims on trust.
+
+## 08
+
+Weeks 7–8
+
+### Run GPU experiments with your temporary Colab T4 access (connectivity validated in Week 1)
+
+Prepare before connecting to the GPU
+
+- Create benchmark scripts, test payloads, and result logging locally.
+- Decide which model/runtime configurations you will compare.
+- Keep the experiment list short enough to complete in your limited GPU session.
+
+On the GPU
+
+- Run a supported model with vLLM. Start with direct Colab calls; optionally validate the Codespaces -> tunnel -> Colab path if permitted.
+- Benchmark several concurrency and batch-related settings.
+- Compare model precision/quantization options supported by that runtime and hardware.
+- Record throughput, TTFT, p95 latency, memory, and failure cases.
+
+Deliverable: A reproducible GPU benchmark suite and a report based on actual measurements.
+
+You don't need a GPU every day to learn API design, request handling, queueing, test design, or metrics. The educational runtime can begin with small CPU-feasible models and existing tensor libraries, but performance conclusions from CPU runs must not be presented as GPU performance. Use GPU access for experiments that genuinely require it.
+
+## 09
+
+Weeks 8–9
+
+### Make it reliable and test it under load
+
+Build
+
+- Unit tests for API validation, authentication, and request state.
+- Integration tests against a small model/backend.
+- Load tests at increasing concurrency levels.
+- Timeouts, cancellation behavior, bounded queues, and graceful shutdown.
+- Docker packaging for the gateway, configuration via environment variables, and health checks; Colab runtime setup is separately scripted/notebook-based.
+
+Test failure scenarios
+
+- Invalid API key.
+- Malformed request.
+- Queue full.
+- Model backend unavailable or Colab runtime reset; tunnel URL expired or changed.
+- Request times out.
+- Client disconnects during streaming; SSE is unsupported or buffered on the chosen tunnel path.
+
+Deliverable: A system that fails predictably rather than hanging or exhausting resources when stressed.
+
+## 10
+
+Weeks 9–10
+
+### Compare backends and analyze bottlenecks
+
+Compare
+
+- Your API/serving layer with a basic backend.
+- Direct vLLM calls versus gateway+tunnel calls with matched workloads (when allowed).
+- The same workload using vLLM.
+- Supported configurations with different concurrency, quantization, and context lengths.
+
+Answer
+
+- Is the bottleneck queueing, token generation, model memory, or request overhead?
+- What changes when concurrency increases?
+- What improves throughput but worsens latency?
+- Which optimizations belong to your serving layer, and which are already handled by the runtime?
+
+Deliverable: A benchmark report with methodology, hardware/model details, results, limitations, and design decisions. You are not expected to beat vLLM.
+
+## 11
+
+Weeks 10–12
+
+### Package the demo and resume story
+
+Build
+
+- A concise dashboard showing request activity and benchmark results.
+- A reproducible demo script that sends concurrent requests.
+- An architecture diagram and setup instructions.
+- A short demo video or session-based live demo procedure, including how to restart Colab and refresh the tunnel URL.
+- A README containing real benchmark results and limitations.
+
+Deliverable: A project someone can clone, understand, run, and evaluate without needing your entire development environment.
+
+Your final presentation should lead with the user-visible API, then show concurrent requests and benchmark results. Keep the UI thin; the serving system is the main project.
+
+## 3. Recommended technology stack
+
+Keep the stack controlled. Every additional framework adds learning and debugging time.
+
+| Component               | Technology                                      | Why                                         |
+| ----------------------- | ----------------------------------------------- | ------------------------------------------- |
+| Language                | Python                                          | Main implementation language                |
+| API                     | FastAPI + Pydantic                              | Request handling and validation             |
+| Initial model execution | Hugging Face Transformers                       | Learn the basic inference path              |
+| GPU serving backend     | vLLM on temporary Colab T4                     | Established inference runtime with batching |
+| Remote backend adapter  | HTTPX AsyncClient                              | Connect gateway to remote backend           |
+| Optional demo transport | Cloudflare Tunnel                              | Temporary HTTPS connection if permitted    |
+| CPU/mock backend        | Mock backend; optional llama.cpp CPU           | Develop and test without GPU                |
+| API contract            | OpenAI-compatible Chat Completions              | Standard client integration                 |
+| Concurrency             | `asyncio`, queues, semaphores                   | Request lifecycle and admission control     |
+| Benchmarking            | Python + HTTPX or `aiohttp`                     | Generate concurrent workloads               |
+| Metrics                 | Prometheus-compatible metrics; optional Grafana | Measure system behavior                     |
+| Testing                 | pytest                                          | Unit and integration tests                  |
+| Packaging               | Docker                                          | Reproducible setup                          |
+| Version control         | Git + GitHub                                    | Code history and project presentation       |
+
+SGLang can be a later comparison, not another framework you need to learn on day one.
+
+For your local CPU-only development, begin with a small model that your machine can actually load. If Transformers is too resource-intensive, use a lighter supported backend for the first milestone. Move to vLLM when you have GPU access.
+
+## 4. Scope boundaries: what we build, what we use, and what may come later
+
+### Build ourselves in the serving platform
+- OpenAI-compatible gateway, authentication, request validation and model registry.
+- Backend interface and vLLM/mock/educational backend adapters.
+- Gateway-level request lifecycle, bounded queue, admission control, timeouts, cancellation and error handling.
+- Metrics, load-generation tools, benchmark analysis, tests and demo dashboard.
+
+### Use first, then study and benchmark
+- vLLM's model execution, GPU kernels, internal scheduler, continuous batching and KV-cache management.
+- Runtime-supported quantization and caching settings.
+- Existing model/tensor libraries for the first educational runner.
+
+### Implement manually as a later educational track
+- A simplified model runner using existing tensor/model libraries; this is not a full implementation of every Transformer operation from scratch.
+- A basic sequential scheduler and controlled batching experiment.
+- A two-level KV-cache exercise: (1) inspect and evaluate library-provided cache state; (2) write an independent K/V cache for a small attention module with append/update operations, correctness checks and documented limits. Do not describe simply passing `past_key_values` as implementing a cache.
+- Sequential scheduler -> static batching -> dynamic batch formation as the required educational progression. A basic continuous-batching prototype is optional only after per-request sequence state and cache handling work.
+
+### Optional advanced work—not a requirement for the first complete project
+- Integrating a custom scheduler, model runner or cache into vLLM internals. This requires version-specific engine knowledge and may require maintaining a fork.
+- Custom CUDA/Triton kernels, multi-GPU inference, distributed serving or production-grade cache allocation.
+
+No RAG, agent loop, tool calling or chatbot. Your arXiv Curator already covers the application layer. No elaborate frontend early. No invented benchmark numbers.
+
+Important attribution boundary: when vLLM performs continuous batching or KV-cache allocation, call those vLLM capabilities that you configured or measured. Claim manual implementation only for components you wrote, tested and can demonstrate.
+
+## 5. Your repository structure
+
+Use one repository with a shared API/benchmark layer and two execution backends: vLLM for the working baseline and an educational runtime for manual experiments. Start small and expand only when each stage is needed.
+
+```
+
+llm-serving-platform/
+├── app/
+│   ├── main.py
+│   ├── api/
+│   │   ├── routes.py
+│   │   └── schemas.py
+│   ├── auth/
+│   │   └── api_keys.py
+│   ├── serving/
+│   │   ├── backend.py
+│   │   ├── mock_backend.py
+│   │   ├── remote_vllm.py
+│   │   ├── model_registry.py
+│   │   └── request_manager.py
+│   ├── metrics/
+│   │   └── instrumentation.py
+│   └── config.py
+├── runtimes/
+│   └── educational/
+│       ├── model_runner.py
+│       ├── generation_loop.py
+│       ├── scheduler.py
+│       ├── batcher.py
+│       └── kv_cache.py
+├── profiling/
+│   ├── profile_prefill_decode.py
+│   └── notes.md
+├── benchmarks/
+│   ├── single_request.py
+│   ├── concurrent_requests.py
+│   ├── direct_vllm_benchmark.py
+│   ├── gateway_benchmark.py
+│   ├── results/
+│   └── report.py
+├── tests/
+│   ├── test_api.py
+│   ├── test_auth.py
+│   └── test_request_manager.py
+├── colab/
+│   ├── setup.ipynb
+│   └── start_vllm.sh
+├── docker/
+├── docs/
+│   ├── architecture.md
+│   └── benchmark-results.md
+├── .env.example
+├── pyproject.toml
+├── Dockerfile
+└── README.md
+
+```
+
+Don't create all these files immediately. Build the first endpoint in the simplest structure possible, then refactor when responsibilities become clear.
+
+## 5A. Profiling milestone: locate the actual bottleneck (required for Track A)
+
+Why: raw latency/throughput numbers do not explain where the time went. Profiling is a separate activity from load generation and benchmark summaries.
+
+Profiling tasks:
+- Instrument and time request validation, gateway admission/queueing, remote HTTP transport, backend queueing (when observable), prefill and decode (when exposed by the runtime).
+- Compare time-to-first-token with decode-phase token cadence for short and long prompts; do not mistake end-to-end TTFT for pure GPU prefill time.
+- Use PyTorch Profiler for a small educational/Transformers execution path where supported; use vLLM's supported metrics/logging/profiling mechanisms for vLLM, not unsupported direct instrumentation of its internals.
+- Capture available GPU memory utilization and utilization samples. State clearly whether utilization is sampled, reported by the runtime, or measured by a profiler.
+- Produce a short bottleneck note: is it gateway queueing, network/tunnel, backend waiting, compute-heavy prefill, memory-sensitive decode or another observed factor? Avoid asserting a compute-versus-memory bottleneck without adequate evidence.
+
+Deliverable: at least one evidence-backed latency breakdown and one prefill/decode-focused profiling report, including what is and is not measurable on a temporary T4.
+
+## 5B. Benchmark and correctness protocol (required for both tracks)
+
+Correctness and performance are different tests. A fast incorrect model runner is not a success.
+
+For correctness:
+- Pin model ID, revision and tokenizer. Use aligned preprocessing/chat templates, special tokens, context truncation rules and decoding parameters.
+- Start with greedy deterministic decoding where feasible and compare token-level behavior against a trusted reference, allowing for documented numerical and implementation differences.
+- Validate your cache exercise against an uncached attention reference at increasing sequence lengths and test repeated incremental appends. If the cache test is only for a toy attention module, say so.
+- Only compare model outputs after matching the execution path and precision as closely as possible; distinguish expected numerical differences from bugs.
+
+For performance:
+- Record GPU type, driver/runtime where available, PyTorch/vLLM/model versions, model revision, tokenizer, dtype and quantization, maximum context/output tokens, generation parameters and concurrency.
+- Specify the workload: fixed prompts or a reproducible prompt distribution, input/output length buckets, request arrival pattern and number of repetitions.
+- Keep cold-start/model-load timing separate from warmed-up, steady-state inference; explicitly document the warm-up method.
+- Report requests/sec and output tokens/sec, TTFT and TPOT when measured from streaming, end-to-end p50/p95, error rate, sample count and total benchmark duration.
+- Run direct-vLLM and gateway/tunnel experiments separately, as close in time/configuration as practical. Any difference may include transport, rate limits and varying shared-runtime conditions; do not subtract measurements and call the remainder exact network time.
+- Avoid presenting CPU prototype measurements as GPU performance. A slower educational runner is expected; explain the trade-offs rather than claiming it competes with vLLM.
+
+Deliverable: a reproducible benchmark configuration, raw CSV/JSON results, and a summary with controlled variables, caveats and evidence-backed conclusions.
+
+## 5C. Track B gate and must-have versus stretch goals
+
+Track A must pass before major Track B work begins: OpenAI SDK compatibility, valid/invalid API key tests, model readiness checks, one real GPU integration path (remote if permitted or Colab-colocated), bounded failure behavior, concurrency benchmark, metrics and documentation.
+
+Track B required:
+1. Correct tiny-model execution or explicit instrumented generation using existing PyTorch/model libraries.
+2. Separated prefill/decode instrumentation with limitations stated.
+3. A basic sequential scheduler, static batching experiment and dynamic batch formation experiment.
+4. A custom K/V store-and-update mechanism for a small attention module with numerical correctness tests, in addition to studying a library cache.
+5. Matched-workload comparison with vLLM and a concise explanation of why performance differs.
+
+Track B stretch only: full-model custom KV cache, genuine continuous batching with per-sequence execution state, vLLM source patch/fork, Triton or CUDA kernels, distributed/multi-GPU inference. Do not allow any stretch goal to block completing the portfolio project.
+
+## 6. How to make the project genuinely strong
+
+The strongest evidence won't be the number of components. It will be the experiments you can defend.
+
+For each experiment, document five things:
+
+1. Question: What are you trying to find out?
+2. Baseline: What happens before your change?
+3. Change: What configuration or implementation did you alter?
+4. Measurement: What happened to throughput, latency, memory, or errors?
+5. Interpretation: Why did the result change, and what are the limitations?
+
+For example:
+
+> Question: How does concurrent request volume affect throughput and tail latency?
+
+You run the same workload at increasing concurrency levels, record the results, plot the changes, and explain where queueing or resource saturation becomes visible.
+
+That is far more defensible in an interview than listing "high-performance inference" without measurements.
+
+## 7. Your first seven days
+
+Start here. Do not attempt to implement the entire architecture before you have a working baseline.
+
+## Week 1 checklist
+
+0 of 7
+
+Day 1: Check the environment and create the repository
+
+Check Python, RAM, available disk space, and whether model downloads are feasible. Create the Git repository and virtual environment.
+
+Day 2: Run a small model on Colab T4
+
+Load a pretrained model, tokenize a prompt, generate text, and understand the inputs and outputs.
+
+Day 3: Measure direct inference and test backend availability
+
+Record model loading time, generation time, output tokens/sec, and memory where measurable.
+
+Day 4: Create the FastAPI gateway with a mock backend
+
+Add a health endpoint and a basic POST /generate endpoint.
+
+Day 5: Add remote backend adapter and test connectivity
+
+Keep the model loaded in vLLM and return real generated responses through HTTP; test the tunnel path only if permitted, otherwise run gateway and vLLM together in Colab.
+
+Day 6: Add non-streaming end-to-end integration; test streaming separately
+
+Implement incremental streaming where the chosen transport supports SSE; otherwise document the limitation and preserve a working non-streaming path.
+
+Day 7: Test disconnections, secrets, and document constraints
+
+Test with curl and Python, record known limitations, and write the initial architecture notes.
+
+## 8. Final scope and priorities
+
+Your priority order is:
+
+1. Working direct inference on Colab and a mock-backed gateway.
+2. OpenAI-compatible client access and pluggable backend interface.
+3. Correct request lifecycle, admission control and concurrency handling.
+4. Reliable benchmarking and observability around vLLM.
+5. A working, documented serving-platform demo with real measurements.
+6. A separate educational model runner using existing tensor/model libraries.
+7. A simple scheduler and batching experiment in the educational runtime.
+8. A simplified KV-cache implementation and correctness/performance tests.
+9. Matched-workload comparisons between the educational runtime and vLLM.
+10. Optional, targeted integration into vLLM internals only if justified by learning goals and supported by a clear extension point.
+11. Session-based demo, Docker packaging for gateway, documentation and recorded results.
+
+The first complete project remains the serving platform. The educational runtime is a planned second stage, not a dependency that blocks the first release.
+
+A useful Track A first version may take 2–3 weeks, with a stronger complete platform around 6–8 weeks. Track B may require an additional 4–8+ weeks. These are estimates, not deadlines; learning, hardware availability and debugging may extend them.
+
+Start with Day 1. Your immediate objective is to get a small pretrained model generating text on the T4 and record a baseline, then prove gateway-to-backend connectivity before building advanced features. Do not start by building the dashboard, authentication system, or scheduler. Each later component should solve a problem you have already encountered or measured.
+
+
+Your final project will look like a small LLM cloud platform. A user can get an API key, call your model from Python, and see how your serving infrastructure handles requests. You will also have a dashboard for monitoring and benchmarking the system.
+
+The UI is only one part of the project. The actual product is the API, request-management layer, inference backend, and performance-measurement system.
+
+## 1. What the finished product looks like
+
+[AI Gateway & LLM Pipeline Dashboard by Achmad Hakim for Spark Pixel Design on Dribbble](https://images.openai.com/static-rsc-4/fWewMU8-lBHIBprPdC-wHZ51139obSAN4hRlWniSc4rbc1mDQ0_ml_lkub0dtw70lxBttfjvFH1nsU8EgNDXH6WTgJZJyLIvPTvg3Ms_fiCF40xrev6xAk8Nj74rJpkrsZkqOmMsyGGX5C8HtLJPyUMtpGQtn2o74wUsqhbkPk8?purpose=inline)
+
+1\. Overview dashboard
+
+Your control panel
+
+- Requests processed and currently active
+- Queue depth and error rate
+- TTFT, TPOT, and throughput
+- CPU/RAM and, when available, GPU/VRAM utilization
+- Current model and backend status
+
+This is where you see what the server is doing.
+
+[Introducing vLLM Playground: A Modern Web Interface for Managing and Interacting with vLLM Servers | vLLM Blog](https://images.openai.com/static-rsc-4/Zf6ay2MqCo_u0S8jP-C8FWfWruVip1HE-ZE5xzpKMYFJzd12CmLMCyzRy17u7CNCjujAryL5h2f8D8kn1y4MihE47gp1IoX2LJpo0NS2xEDR57vWDbgn0T9aEeHd6LYd7Jyn0H3-De4wyAHayDPY8UyN01UxmgI_tpSA26OoBr4?purpose=inline)
+
+2\. API playground
+
+A way to try the model
+
+- Enter a prompt and choose generation settings
+- Stream the response token by token
+- View latency and token counts
+- Inspect the request ID and response metadata
+
+This is a convenient demo, not the main engineering contribution.
+
+[Introducing vLLM Playground: A Modern Web Interface for Managing and Interacting with vLLM Servers | vLLM Blog](https://images.openai.com/static-rsc-4/QDCU2KMbq1gWMWla6lFgjFn2nqmjUHY2UV5LX9A9c2w59J8nBc_UedRCU3eG6dMjRDm5nzHoPfy28RWv-W6Jr_J8oBWRIsrRCE-U1dGILupoLcgyDUBfOtyH4t8014rgZ1W_IiwBBU0jeGwqEvDtX70bziroy7yRBl8HA1UWD4M?purpose=inline)
+
+3\. Benchmark laboratory
+
+The most important demo screen
+
+- Configure concurrent requests and prompt/output lengths
+- Run repeatable tests
+- Compare sequential and concurrent workloads
+- Compare supported batching and quantization configurations
+- Display throughput, latency percentiles, and failures
+
+This is where you demonstrate that you measured engineering trade-offs rather than simply wrapping a model API.
+
+[Aura – AI design, HTML + Figma export](https://images.openai.com/static-rsc-4/VjkfFPGxVVLYv8QRr2y_d5icYeH49uxg7JmEhJVZ_-htO-uTAn9MIcxLQMsBT5iiM4t60pxQ4ac46sdP8GyTs3QQ_RpaRBa6PVHRLiRqKSktHAeiTfurNeGN2_-AT8190KIaV0uZ5-fChF6b1CaFFlJXkHeCEu15MJssn0Kx8oY?purpose=inline)
+
+4\. API access page
+
+The user-facing product layer
+
+- Create or revoke API keys
+- Display the endpoint and model identifier
+- Set basic rate limits
+- Show usage counts
+- Provide a copyable Python example
+
+This makes the platform usable by someone other than you.
+
+These are examples of the intended interface, not screenshots of an already-built application.
+
+## 2. What happens behind the UI?
+
+Suppose an interviewer opens your platform and sends 20 requests simultaneously.
+
+User / Python SDK
+
+OpenAI-compatible request
+
+API gateway
+
+Authentication · validation · rate limits
+
+Request manager
+
+Queue · timeouts · cancellation · admission control
+
+Inference backend
+
+Model execution · batching · KV cache
+
+Generated tokens
+
+Streamed back to each client
+
+Metrics pipeline
+
+Measures queue time, TTFT, TPOT, throughput, errors and resource use
+
+The dashboard reads the measurements produced by the system. It doesn't itself perform batching or optimize inference.
+
+One important implementation detail: if you use vLLM, its inference engine already manages its own batching and KV cache. Your code will manage the gateway and request lifecycle, configure the backend, and measure its behavior.
+
+## 3. A real example of using your platform
+
+A user gets an API key and endpoint from your application. They can then call your model using Python:
+
+```
+from openai import OpenAIclient = OpenAI(    api_key="your-demo-key",    base_url="https://your-server.example/v1")response = client.chat.completions.create(    model="my-model",    messages=[        {            "role": "user",            "content": "Explain how KV caching works."        }    ])print(response.choices[0].message.content)
+```
+
+The endpoint above is illustrative; you would replace it with your deployed server URL. The request must be authenticated and routed to your model backend.
+
+## 4. What the interviewer actually sees
+
+Your demo can follow this sequence:
+
+1. Call the model: Send a prompt through your OpenAI-compatible API and show the streamed response.
+2. Create load: Run a benchmark with multiple concurrent clients.
+3. Show the effect: Display queue depth, throughput, TTFT, and p95 latency as the workload changes.
+4. Compare configurations: Run a controlled experiment and show the actual measurements.
+5. Explain the result: Discuss why performance changed, where the bottleneck appeared, and what you would optimize next.
+
+You don't need every advanced feature on the dashboard. A working API, a good benchmark screen, and reliable measurements are more valuable than a large interface with superficial metrics.
+
+The final deliverable is a usable inference API plus a monitoring and benchmarking console. The UI makes the system visible; the engineering underneath is what makes it a serious portfolio project.
+
+
+## 10. OpenInfer implementation and integration strategy
+
+### One repository, two backends
+
+Keep the public gateway and benchmark tools independent of the runtime. Define a small backend interface for operations such as listing available models, generating a response, and optionally streaming tokens. Implement:
+- `MockBackend`: fast tests with no model/GPU.
+- `VLLMBackend`: calls an existing vLLM server through its supported API.
+- `EducationalBackend`: invokes your own simplified runtime.
+
+The gateway should not contain Transformer math, KV-cache code or GPU execution logic. Those belong to a runtime. This separation lets the same client and tests exercise each backend.
+
+### What “manual implementation” means
+
+Manual implementation does not mean reimplementing all of PyTorch, every Transformer operation, or the CUDA stack. Start by using Hugging Face Transformers/PyTorch to load a small compatible model and understand the generation path. Then implement one component at a time in the educational runtime, with correctness tests and a reference comparison.
+
+Suggested order:
+1. Correct single-request generation using existing model/tensor libraries.
+2. Clear prefill/decode instrumentation and timing.
+3. Simple sequential request scheduler.
+4. Static batching, followed by dynamic batch formation; measure queue wait, utilization and latency.
+5. Inspect library `past_key_values`/cache objects, then implement K/V tensor storage and incremental updates in a small attention module; verify cached-versus-uncached correctness.
+6. Optional continuous batching only after the simple runner correctly handles independent requests and per-sequence states.
+7. Benchmark against vLLM with matched workloads and report trade-offs.
+
+### Integration into vLLM itself
+
+Do not assume a custom educational scheduler or cache can simply be plugged into vLLM. Its internal interfaces are version-dependent and components are tightly coordinated. First keep the educational runtime separate. Later, inspect the current vLLM extension points and source architecture; choose one narrow integration target only if it is technically feasible. Use a dedicated branch/fork, pin the vLLM version, add tests, and document the patch. If the integration is too invasive, the separate runtime plus a rigorous comparison remains a valid outcome.
+
+### Acceptance criteria for the educational track
+
+- The educational backend can generate output for a small supported model. A separate attention-module KV-cache test is acceptable even if full-model custom caching is deferred.
+- Tests compare outputs or token-level behavior against a trusted reference, allowing for documented numerical/sampling differences.
+- Each manually implemented component has its own tests and limitations.
+- Benchmark runs record exact model ID and revision, tokenizer, precision/quantization, library versions, hardware, prompt/output lengths, sampling settings, concurrency, warm-up policy and repetitions.
+- The report distinguishes gateway overhead, educational-runtime performance and vLLM performance, and tests model correctness separately from performance.
+- The README clearly identifies which components are implemented by you and which are provided by dependencies.
+
+### Claims we can make only after evidence
+
+Do not claim a custom inference engine, KV-cache implementation, continuous batcher, CUDA kernel or vLLM integration until that component has actually been implemented and tested. If only a simplified educational prototype exists, call it a prototype and state its limitations.
+
+## 11. Practical demo runbook and acceptance criteria
+
+### Configuration
+
+Gateway environment variables (example names; never commit secrets):
+- `BACKEND_MODE=mock|remote`
+- `BACKEND_BASE_URL=https://<temporary-tunnel-host>/v1` (only if remote demo is permitted)
+- `BACKEND_API_KEY=<internal-secret>`
+- `PUBLIC_API_KEYS=<demo-keys-or-key-store-config>`
+- `BACKEND_TIMEOUT_SECONDS=...`
+- `MAX_ACTIVE_REQUESTS=...` and `MAX_PENDING_REQUESTS=...`
+
+### Demo startup
+
+1. In Colab, select GPU runtime and verify T4 availability, VRAM, and supported vLLM/model versions.
+2. Start vLLM with one small supported Qwen instruct model; call it directly from Colab and record TTFT/throughput.
+3. If allowed under the runtime's policies, start a protected tunnel and test its URL with a non-streaming inference request. Do not scrape a browser DevTools request URL; use the documented tunnel URL and a known backend endpoint.
+4. In Codespaces, set `BACKEND_BASE_URL` and internal backend credential. Start FastAPI gateway.
+5. Call `GET /health` and `GET /v1/models`, then `POST /v1/chat/completions` through the gateway using an OpenAI SDK client.
+6. Test 1/4/8/16 concurrent requests as supported; monitor errors, queue depth, latency and memory.
+7. Validate streaming separately; if SSE is unavailable over the tunnel, keep non-streaming mode and document the limitation.
+8. Simulate a backend shutdown; gateway should return a clear 503/504 instead of hanging.
+9. Save hardware details, versions, prompts, output limits, concurrency, raw measurements and plots.
+10. Stop the runtime/tunnel when done. Do not promise always-on availability.
+
+### Acceptance tests
+
+- Mock backend works with no GPU or tunnel.
+- OpenAI Python SDK can call gateway with a valid user key; invalid keys are rejected.
+- `GET /v1/models` lists only available model IDs; unavailable backends are clearly indicated.
+- A valid request can reach real vLLM inference in Colab via a permitted connection, or via colocated Colab integration tests.
+- Backend secret is not exposed in client responses, logs or Git.
+- Queue limits and remote outages produce bounded, documented errors.
+- Direct-backend vs end-to-end benchmark results distinguish network overhead from GPU work.
+- Streaming claims are made only after end-to-end SSE validation.
+- README includes a reproducible demo, runtime limitations, and measured results rather than invented performance claims.
+
+### Portfolio claim boundary
+
+Accurately say: "Built an OpenAI-compatible FastAPI inference gateway with authenticated requests, pluggable local/remote backends, request admission control, observability and benchmarks against a vLLM GPU backend."
+
+Do NOT claim permanent deployment, multi-GPU production scaling, custom vLLM continuous batching, or 24/7 availability without implementing and demonstrating them.
+
+
+## 12. Final project definition
+
+The project has two deliverable stages:
+
+**Stage A — LLM serving platform:** a working OpenAI-compatible API, pluggable backend architecture, authentication, request management, observability, reliability tests and reproducible benchmarks using vLLM.
+
+**Stage B — OpenInfer educational runtime:** a separate, progressively developed inference implementation using existing model/tensor libraries. Start with a correct model runner, then add selected manual experiments for scheduling, batching and KV-cache management. Compare it with vLLM. Attempt integration into vLLM internals only as an optional advanced extension.
+
+This approach preserves a usable portfolio project even if the educational runtime or deep vLLM integration takes longer than expected. It also gives a clear progression from using an established engine to understanding and implementing selected engine components yourself.
