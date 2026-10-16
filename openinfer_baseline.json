@@ -1,0 +1,47 @@
+{
+  "recorded_at_utc": "2026-10-16T17:43:25.417680+00:00",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "prompt": "Explain how a KV cache helps autoregressive text generation in three sentences.",
+  "generation": {
+    "max_new_tokens": 96,
+    "do_sample": false,
+    "use_cache": true,
+    "prompt_tokens": 45,
+    "warmup_runs": 1,
+    "measured_runs": 3
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.1",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "dtype": "float16",
+    "peak_gpu_memory_bytes": 3106053632
+  },
+  "model_load_seconds": 48.655146438999964,
+  "runs": [
+    {
+      "run": 1,
+      "generation_seconds": 3.34751857699996,
+      "generated_tokens": 96,
+      "output_tokens_per_second": 28.677958849756415,
+      "generated_text": "A Key-Value (KV) cache is used to store frequently accessed data quickly and efficiently, reducing the need for repeated database queries. In the context of autoregressive text generation, this means that instead of generating each word based on the entire previous sequence, which can be computationally expensive, the system can precompute and store intermediate results or \"keys\" that represent partial sequences. When generating new words, it looks up these keys from the cache rather than recomputing them"
+    },
+    {
+      "run": 2,
+      "generation_seconds": 3.399743380000018,
+      "generated_tokens": 96,
+      "output_tokens_per_second": 28.237425378853004,
+      "generated_text": "A Key-Value (KV) cache is used to store frequently accessed data quickly and efficiently, reducing the need for repeated database queries. In the context of autoregressive text generation, this means that instead of generating each word based on the entire previous sequence, which can be computationally expensive, the system can precompute and store intermediate results or \"keys\" that represent partial sequences. When generating new words, it looks up these keys from the cache rather than recomputing them"
+    },
+    {
+      "run": 3,
+      "generation_seconds": 3.3959292469999127,
+      "generated_tokens": 96,
+      "output_tokens_per_second": 28.26914020214346,
+      "generated_text": "A Key-Value (KV) cache is used to store frequently accessed data quickly and efficiently, reducing the need for repeated database queries. In the context of autoregressive text generation, this means that instead of generating each word based on the entire previous sequence, which can be computationally expensive, the system can precompute and store intermediate results or \"keys\" that represent partial sequences. When generating new words, it looks up these keys from the cache rather than recomputing them"
+    }
+  ]
+}
