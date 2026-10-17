@@ -1,0 +1,520 @@
+{
+  "recorded_at_utc": "2026-10-17T17:58:37.593423+00:00",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "environment": {
+    "python": "3.13.15",
+    "torch": "2.13.0+cu130",
+    "vllm": "0.31.0",
+    "gpu": "Tesla T4",
+    "vllm_dtype_from_stage3_command": "half",
+    "vllm_max_model_len_from_stage3_command": 2048
+  },
+  "method": {
+    "path": "Colab Python client -> Colab localhost vLLM",
+    "stream": true,
+    "temperature": 0,
+    "ignore_eos": true,
+    "warmup_requests": 2,
+    "repeats_per_condition": 5,
+    "concurrency": 1,
+    "ttft_definition": "client request start to first nonempty streamed text delta",
+    "tpot_estimate_definition": "first to last text delta divided by completion_tokens minus one; chunking can make this approximate",
+    "gpu_memory_definition": "nvidia-smi whole-GPU memory.used before and after each request, not peak or per-request KV memory"
+  },
+  "summary": [
+    {
+      "bucket": "short",
+      "output_limit": 32,
+      "samples": 5,
+      "median_prompt_tokens": 53,
+      "median_completion_tokens": 32,
+      "median_ttft_seconds": 0.03159440099989297,
+      "p95_ttft_seconds": 0.0322256709996509,
+      "median_tpot_estimate_seconds": 0.01452114903226644,
+      "median_elapsed_seconds": 0.48226505699949485,
+      "p95_elapsed_seconds": 0.4828632299995661,
+      "median_output_tokens_per_second": 66.35355295922574
+    },
+    {
+      "bucket": "short",
+      "output_limit": 128,
+      "samples": 5,
+      "median_prompt_tokens": 56,
+      "median_completion_tokens": 128,
+      "median_ttft_seconds": 0.03178380400004244,
+      "p95_ttft_seconds": 0.03269686999919941,
+      "median_tpot_estimate_seconds": 0.014668232480318235,
+      "median_elapsed_seconds": 1.8943428069997026,
+      "p95_elapsed_seconds": 1.899678832999598,
+      "median_output_tokens_per_second": 67.5696075319804
+    },
+    {
+      "bucket": "long",
+      "output_limit": 32,
+      "samples": 5,
+      "median_prompt_tokens": 569,
+      "median_completion_tokens": 32,
+      "median_ttft_seconds": 0.13513639400025568,
+      "p95_ttft_seconds": 0.13722633700035658,
+      "median_tpot_estimate_seconds": 0.015274221161293568,
+      "median_elapsed_seconds": 0.6090061940003579,
+      "p95_elapsed_seconds": 0.611726052999984,
+      "median_output_tokens_per_second": 52.54462157404789
+    },
+    {
+      "bucket": "long",
+      "output_limit": 128,
+      "samples": 5,
+      "median_prompt_tokens": 579,
+      "median_completion_tokens": 128,
+      "median_ttft_seconds": 0.1364854319999722,
+      "p95_ttft_seconds": 0.13918284499959555,
+      "median_tpot_estimate_seconds": 0.015402199275597486,
+      "median_elapsed_seconds": 2.0929032140002164,
+      "p95_elapsed_seconds": 2.0982696349992693,
+      "median_output_tokens_per_second": 61.15906323032995
+    }
+  ],
+  "raw": [
+    {
+      "bucket": "short",
+      "trial": 0,
+      "prompt": "Trial 0. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 53,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.03165809099937178,
+      "tpot_estimate_seconds": 0.01451988606453186,
+      "elapsed_seconds": 0.48226505699949485,
+      "output_tokens_per_second": 66.35355295922574,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1,
+      "prompt": "Trial 1. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 53,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.0311772570003086,
+      "tpot_estimate_seconds": 0.014513893806437292,
+      "elapsed_seconds": 0.48162475299977814,
+      "output_tokens_per_second": 66.44176778848977,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 2,
+      "prompt": "Trial 2. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 53,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.0322256709996509,
+      "tpot_estimate_seconds": 0.01452114903226644,
+      "elapsed_seconds": 0.4828632299995661,
+      "output_tokens_per_second": 66.27135389876085,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 3,
+      "prompt": "Trial 3. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 53,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.031005539000034332,
+      "tpot_estimate_seconds": 0.014534891354830302,
+      "elapsed_seconds": 0.4820335799995519,
+      "output_tokens_per_second": 66.38541655133186,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 4,
+      "prompt": "Trial 4. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 53,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.03159440099989297,
+      "tpot_estimate_seconds": 0.014536834096772156,
+      "elapsed_seconds": 0.48271298300005583,
+      "output_tokens_per_second": 66.29198121235595,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1000,
+      "prompt": "Trial 1000. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 56,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.03269686999919941,
+      "tpot_estimate_seconds": 0.014623852637798094,
+      "elapsed_seconds": 1.8903793259996746,
+      "output_tokens_per_second": 67.7112779639138,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1001,
+      "prompt": "Trial 1001. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 56,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.032327666000128374,
+      "tpot_estimate_seconds": 0.014654659425198007,
+      "elapsed_seconds": 1.8939340320002884,
+      "output_tokens_per_second": 67.58419133786414,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1002,
+      "prompt": "Trial 1002. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 56,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.031010677999802283,
+      "tpot_estimate_seconds": 0.014668232480318235,
+      "elapsed_seconds": 1.8943428069997026,
+      "output_tokens_per_second": 67.5696075319804,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1003,
+      "prompt": "Trial 1003. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 56,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.0312260430000606,
+      "tpot_estimate_seconds": 0.01468912042519795,
+      "elapsed_seconds": 1.8972175019998758,
+      "output_tokens_per_second": 67.46722495711427,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "short",
+      "trial": 1004,
+      "prompt": "Trial 1004. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 56,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.03178380400004244,
+      "tpot_estimate_seconds": 0.014704188488187041,
+      "elapsed_seconds": 1.899678832999598,
+      "output_tokens_per_second": 67.37981061666495,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 100,
+      "prompt": "Trial 100. Context to read: latency attention prefill prefill decode decode attention cache decode decode layers cache layers memory prefill layers tokens cache cache cache tokens cache tokens tokens layers layers tokens prefill tokens attention prefill prefill attention tokens layers tokens prefill decode attention latency cache decode decode decode memory layers memory tokens layers memory decode tokens cache attention memory prefill memory layers memory layers prefill decode layers prefill latency layers prefill tokens tokens latency prefill attention latency layers prefill memory decode tokens latency decode prefill layers cache memory latency tokens cache attention tokens prefill prefill attention memory latency memory tokens latency attention decode memory layers layers prefill latency attention attention latency decode cache latency latency latency latency memory prefill latency memory layers memory tokens memory latency latency layers tokens attention decode tokens decode layers tokens prefill tokens attention tokens memory attention layers cache tokens cache decode tokens prefill decode cache tokens cache cache cache cache latency decode tokens prefill latency tokens tokens prefill attention cache tokens attention cache tokens tokens cache memory prefill cache prefill memory decode decode decode decode tokens tokens decode memory decode prefill memory decode layers layers latency attention memory decode layers attention decode tokens attention layers memory latency latency attention attention layers latency cache memory cache prefill latency attention cache memory latency latency tokens tokens decode cache layers prefill decode latency attention latency decode tokens cache decode cache prefill latency attention attention latency prefill memory decode memory attention latency decode decode attention memory attention cache cache tokens memory latency decode layers attention decode latency prefill tokens layers layers latency prefill cache memory memory prefill layers decode latency layers memory memory tokens attention memory memory layers layers attention layers latency attention memory prefill tokens memory tokens cache memory attention tokens tokens latency prefill latency memory prefill decode cache attention cache latency attention latency prefill attention layers layers cache latency tokens tokens layers prefill memory prefill decode layers tokens cache decode attention tokens memory tokens latency attention attention attention latency prefill attention cache attention tokens decode cache cache decode prefill attention attention cache cache attention cache layers tokens tokens layers layers decode prefill tokens attention layers decode prefill prefill latency memory cache cache decode prefill latency decode attention cache memory layers memory latency decode latency layers layers latency latency decode layers latency memory attention layers memory decode tokens memory layers layers decode decode latency tokens decode attention tokens tokens latency memory decode tokens layers memory tokens cache prefill latency prefill latency memory layers prefill latency layers prefill tokens tokens attention decode layers decode latency cache layers decode decode latency latency decode tokens latency tokens prefill decode prefill decode latency layers attention decode tokens prefill prefill attention layers layers decode decode prefill latency\nTrial 100. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 569,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.13513639400025568,
+      "tpot_estimate_seconds": 0.01526976064515991,
+      "elapsed_seconds": 0.6090061940003579,
+      "output_tokens_per_second": 52.54462157404789,
+      "gpu_memory_before": {
+        "used_mib": 11661,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 101,
+      "prompt": "Trial 101. Context to read: cache latency decode attention attention memory memory memory prefill layers attention cache attention attention decode layers tokens cache prefill prefill tokens attention memory attention cache prefill latency tokens cache prefill memory memory layers attention layers decode tokens layers memory layers memory decode layers latency latency attention prefill tokens latency memory cache layers tokens attention layers prefill memory tokens decode cache attention prefill attention attention attention decode tokens memory layers layers attention latency prefill latency attention memory cache prefill memory prefill cache cache decode latency decode decode latency layers attention decode tokens tokens memory prefill decode prefill prefill decode tokens layers tokens memory tokens memory latency cache prefill cache tokens latency prefill memory decode tokens memory decode tokens cache decode layers cache attention memory prefill cache cache prefill layers tokens attention memory tokens memory tokens layers cache cache memory tokens prefill prefill latency tokens tokens layers tokens attention latency cache layers attention memory layers latency tokens memory prefill attention memory layers prefill attention layers layers prefill attention tokens decode attention memory attention attention latency layers layers cache attention layers cache prefill tokens prefill tokens layers tokens memory cache attention attention layers decode attention attention decode cache latency prefill cache latency attention tokens memory attention memory cache memory prefill cache memory attention decode prefill attention tokens layers layers prefill tokens decode cache layers cache layers memory tokens latency attention latency cache layers latency prefill latency memory cache attention prefill prefill memory prefill cache layers latency layers layers attention cache tokens tokens prefill memory layers decode decode memory cache latency tokens cache decode decode latency tokens tokens decode latency layers memory layers attention prefill memory latency cache latency attention decode memory latency decode memory layers attention decode memory latency attention decode attention latency memory decode cache latency tokens cache decode latency latency memory decode prefill layers attention tokens latency layers decode decode prefill attention latency layers latency memory cache layers latency attention decode tokens latency decode latency decode memory tokens prefill cache tokens tokens cache memory tokens cache attention decode decode decode latency decode prefill prefill cache layers attention decode tokens cache decode latency latency memory latency memory layers prefill attention decode tokens tokens tokens prefill latency layers latency latency cache latency tokens tokens latency tokens cache latency attention decode memory cache memory prefill tokens layers cache latency decode memory memory layers prefill prefill attention memory cache prefill tokens cache decode attention cache prefill latency prefill tokens tokens memory latency attention decode prefill memory latency attention tokens tokens cache tokens cache latency latency layers layers cache latency prefill decode latency memory latency attention memory layers memory cache cache attention decode layers memory tokens memory memory memory attention prefill attention decode prefill layers layers\nTrial 101. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 568,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.13384367599974212,
+      "tpot_estimate_seconds": 0.015274148290348333,
+      "elapsed_seconds": 0.6078469000003679,
+      "output_tokens_per_second": 52.64483540177738,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 102,
+      "prompt": "Trial 102. Context to read: latency layers layers tokens cache latency decode cache memory latency decode attention layers layers attention memory decode latency tokens attention prefill memory cache prefill memory layers latency prefill tokens prefill tokens decode memory latency latency prefill decode layers tokens latency decode attention cache memory memory memory memory cache tokens layers decode tokens tokens prefill cache memory cache prefill memory latency attention attention memory layers latency prefill tokens tokens memory layers cache memory memory latency cache cache latency layers decode tokens decode tokens tokens latency latency decode cache cache decode attention memory decode tokens tokens attention attention tokens cache prefill latency memory attention cache latency memory decode cache prefill attention attention memory layers memory tokens decode prefill latency attention cache attention decode layers latency layers memory tokens attention layers attention memory tokens prefill layers latency layers latency attention memory prefill attention memory decode tokens layers layers decode latency layers latency memory latency prefill cache prefill tokens tokens memory memory latency decode tokens tokens latency prefill layers prefill layers memory prefill decode prefill attention memory latency prefill memory prefill decode cache prefill cache attention cache decode memory cache memory latency cache cache latency attention latency layers memory prefill latency cache memory tokens attention tokens decode decode prefill attention prefill cache decode memory memory attention cache tokens tokens layers decode tokens prefill tokens decode memory latency prefill cache cache prefill cache tokens memory cache attention decode tokens memory latency decode layers tokens decode layers cache layers layers layers memory memory prefill attention attention tokens attention decode prefill memory tokens decode cache cache latency latency decode layers latency cache cache decode attention memory prefill prefill decode memory attention layers prefill attention prefill prefill cache prefill layers cache attention memory cache latency latency latency memory decode prefill tokens decode memory latency memory latency layers decode latency memory cache latency memory layers layers cache latency attention cache memory attention tokens attention layers decode decode layers layers decode memory layers latency attention attention prefill attention attention cache layers attention prefill memory decode memory memory memory tokens memory prefill layers tokens prefill latency prefill latency prefill layers cache memory memory latency cache decode memory decode cache memory memory cache layers attention prefill decode prefill layers cache prefill decode cache decode tokens decode prefill cache layers cache prefill memory tokens decode latency attention latency tokens prefill cache tokens decode cache decode tokens latency prefill cache attention memory tokens cache memory prefill latency attention attention attention decode layers attention memory memory prefill tokens latency tokens cache attention latency cache memory tokens decode tokens decode memory tokens layers attention latency tokens layers cache prefill decode cache memory layers attention cache attention attention attention tokens memory latency latency attention memory attention latency\nTrial 102. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 569,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.1361887579996619,
+      "tpot_estimate_seconds": 0.015274221161293568,
+      "elapsed_seconds": 0.6101629969998612,
+      "output_tokens_per_second": 52.44500265886703,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 103,
+      "prompt": "Trial 103. Context to read: memory tokens decode prefill prefill attention cache prefill prefill prefill memory latency prefill layers decode decode attention decode cache memory decode layers decode latency tokens decode memory attention memory attention latency tokens latency memory cache decode layers attention tokens cache attention decode cache prefill prefill latency prefill latency decode decode prefill attention latency decode decode attention layers cache attention decode prefill cache tokens attention tokens prefill attention attention attention prefill attention tokens latency layers cache cache tokens tokens layers decode memory attention tokens cache decode memory prefill decode latency latency cache layers memory memory cache cache layers decode memory tokens memory decode cache layers cache memory prefill layers latency decode prefill latency attention tokens prefill tokens prefill tokens attention latency layers layers prefill layers attention tokens decode layers memory decode tokens layers attention decode latency layers prefill prefill tokens layers memory latency tokens tokens layers tokens cache prefill latency prefill prefill latency tokens memory memory layers layers memory memory cache attention tokens attention cache tokens prefill memory tokens layers cache decode tokens layers layers memory cache decode prefill decode tokens latency layers attention cache memory tokens memory cache attention decode latency latency decode layers cache layers cache cache prefill tokens tokens cache memory layers layers attention layers layers decode cache memory memory cache decode decode memory layers decode tokens layers decode layers cache latency decode memory decode memory latency decode prefill attention tokens latency memory layers decode cache layers memory latency decode layers cache latency latency memory cache latency latency latency prefill decode latency layers latency cache decode cache prefill prefill prefill attention attention layers decode prefill memory decode memory attention latency prefill prefill prefill tokens tokens memory attention attention decode cache decode latency attention attention layers latency layers layers cache memory latency latency layers tokens memory attention prefill prefill prefill prefill tokens layers prefill decode attention layers prefill layers attention latency tokens latency latency cache tokens cache attention decode cache prefill layers tokens latency decode memory prefill prefill tokens cache tokens prefill attention layers prefill memory decode prefill tokens cache decode attention layers layers decode decode latency layers decode layers tokens latency memory layers latency latency attention latency latency layers memory prefill latency latency layers prefill attention latency prefill attention tokens tokens tokens decode prefill cache latency attention attention cache memory cache latency prefill memory cache latency layers tokens prefill decode decode decode tokens layers memory attention decode decode decode decode memory layers layers cache attention prefill cache memory decode layers cache latency tokens memory prefill attention cache layers latency attention decode memory tokens tokens layers memory prefill tokens decode layers prefill cache attention prefill prefill latency memory decode decode cache decode prefill decode decode tokens attention cache memory\nTrial 103. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 577,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.13722633700035658,
+      "tpot_estimate_seconds": 0.015289675419338775,
+      "elapsed_seconds": 0.611726052999984,
+      "output_tokens_per_second": 52.310997452320116,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 104,
+      "prompt": "Trial 104. Context to read: cache prefill decode tokens decode attention prefill decode prefill tokens memory decode cache prefill cache memory decode attention layers decode cache tokens latency layers attention prefill tokens prefill tokens latency decode decode memory tokens cache memory tokens prefill layers prefill memory tokens memory memory latency memory layers latency layers memory memory cache cache attention cache cache decode tokens decode latency decode attention cache cache prefill latency tokens tokens tokens layers tokens memory latency attention latency attention decode layers decode attention attention tokens prefill tokens cache cache latency cache tokens attention layers tokens layers layers layers cache decode layers memory cache attention layers layers layers attention tokens attention prefill latency prefill layers tokens tokens prefill cache decode cache tokens latency latency attention tokens tokens memory latency decode decode tokens tokens latency latency cache memory cache layers cache prefill tokens prefill cache latency prefill decode prefill latency latency attention attention tokens latency memory tokens decode tokens decode cache tokens latency prefill cache decode decode tokens tokens memory memory decode cache tokens memory attention decode attention tokens latency prefill latency attention decode prefill tokens attention layers decode latency attention layers decode cache attention tokens decode decode prefill memory tokens memory latency tokens latency decode prefill cache decode cache decode latency prefill decode tokens attention prefill attention layers memory decode prefill cache layers latency decode memory attention memory prefill attention prefill memory latency latency latency latency memory cache decode prefill latency layers decode decode cache memory memory prefill memory tokens prefill attention layers cache attention cache latency memory prefill decode attention latency tokens decode memory prefill tokens attention decode tokens memory layers decode tokens prefill prefill tokens decode memory memory prefill layers cache memory attention attention decode memory prefill attention prefill tokens attention cache attention cache cache prefill attention attention cache layers prefill tokens tokens memory prefill memory attention latency memory tokens latency latency prefill prefill decode memory decode latency tokens attention latency decode prefill latency memory prefill tokens memory tokens prefill attention decode memory memory layers prefill attention decode prefill layers attention attention layers attention cache tokens attention latency memory decode tokens latency memory memory latency latency memory latency latency attention attention attention tokens memory tokens prefill latency prefill decode latency memory layers tokens cache tokens memory latency latency memory latency attention memory decode layers layers tokens prefill attention layers memory memory decode cache memory cache decode cache layers decode memory layers prefill prefill tokens decode tokens decode layers decode memory tokens decode decode memory decode tokens attention memory layers cache prefill attention layers layers cache layers decode latency layers layers latency decode cache layers memory cache attention attention latency layers attention cache tokens cache decode memory decode tokens cache cache tokens tokens\nTrial 104. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 569,
+      "output_limit": 32,
+      "completion_tokens": 32,
+      "finish_reason": "length",
+      "content_chunks": 32,
+      "ttft_seconds": 0.13433772400003363,
+      "tpot_estimate_seconds": 0.01527838961291925,
+      "elapsed_seconds": 0.6084012340006666,
+      "output_tokens_per_second": 52.59686899314366,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 1100,
+      "prompt": "Trial 1100. Context to read: decode layers prefill tokens latency tokens decode latency cache cache attention latency prefill latency memory prefill attention prefill attention prefill tokens latency layers cache tokens attention memory memory tokens latency tokens cache attention memory layers decode layers attention cache layers tokens cache layers tokens cache cache layers attention cache layers decode cache layers memory decode tokens latency cache prefill attention decode layers decode memory decode prefill memory latency layers latency decode cache memory layers decode attention layers decode layers tokens latency prefill layers prefill decode memory prefill layers attention layers tokens memory attention latency tokens cache tokens layers tokens decode tokens latency latency layers tokens tokens prefill tokens prefill memory prefill attention decode attention prefill prefill attention attention prefill memory latency layers prefill tokens memory memory tokens cache tokens tokens cache decode latency memory tokens tokens attention prefill layers prefill prefill tokens attention attention attention prefill attention decode prefill decode attention latency cache prefill decode decode layers tokens memory cache memory tokens layers layers attention memory latency latency tokens attention latency prefill cache latency prefill prefill latency memory attention memory latency attention prefill decode prefill attention tokens cache tokens cache tokens latency tokens latency latency attention decode memory prefill decode latency decode memory tokens tokens layers tokens layers memory memory tokens attention cache decode latency latency cache latency tokens attention tokens attention decode tokens tokens prefill latency tokens layers memory layers memory attention memory attention attention tokens latency tokens cache layers decode prefill latency tokens tokens attention latency latency attention layers prefill prefill cache layers latency decode layers layers decode attention decode decode prefill layers memory latency memory prefill memory attention memory cache attention prefill memory tokens memory tokens cache attention layers prefill tokens prefill decode prefill attention tokens latency decode latency cache attention cache tokens cache tokens attention prefill decode prefill memory layers prefill layers prefill latency memory memory memory tokens memory memory layers attention prefill layers layers layers prefill prefill cache attention attention layers memory tokens cache layers decode cache prefill layers decode cache attention decode layers memory attention prefill attention decode cache attention layers attention prefill decode tokens prefill latency cache memory layers layers prefill decode memory tokens memory latency attention memory tokens attention memory latency decode tokens tokens decode prefill prefill decode layers decode prefill cache prefill prefill prefill prefill layers latency memory layers latency latency cache layers tokens decode tokens attention decode latency latency decode attention layers latency layers memory memory attention memory attention tokens memory memory prefill latency attention attention cache prefill attention attention layers attention memory latency memory tokens cache tokens cache decode memory layers cache memory decode latency tokens memory memory attention memory tokens layers attention prefill memory decode layers cache memory\nTrial 1100. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 579,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.13575595799920848,
+      "tpot_estimate_seconds": 0.015392485125988698,
+      "elapsed_seconds": 2.0911012269998537,
+      "output_tokens_per_second": 61.21176648327267,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 1101,
+      "prompt": "Trial 1101. Context to read: tokens memory cache attention latency cache cache decode layers attention attention attention tokens latency layers memory layers tokens decode attention latency prefill tokens decode decode tokens prefill cache layers prefill cache memory latency cache layers latency prefill tokens cache layers tokens memory decode attention tokens layers prefill memory tokens attention memory latency layers latency cache layers cache layers tokens decode prefill decode prefill cache decode layers decode latency layers memory tokens layers cache decode cache cache cache prefill decode memory tokens cache latency layers layers tokens cache decode cache tokens attention prefill attention tokens tokens prefill decode cache cache latency layers prefill prefill layers latency tokens memory tokens prefill cache latency layers memory decode latency tokens layers cache memory attention prefill memory layers latency attention memory prefill cache cache latency latency layers tokens memory attention tokens layers layers prefill decode memory cache prefill cache latency latency tokens attention prefill tokens tokens prefill latency latency decode prefill prefill decode tokens memory latency latency decode memory layers prefill attention prefill decode tokens attention layers cache layers cache cache memory attention prefill attention layers cache memory memory latency latency memory latency cache latency attention memory attention decode tokens layers attention memory tokens tokens memory decode tokens layers layers memory cache tokens latency prefill prefill cache attention layers prefill latency prefill prefill latency layers decode memory memory latency decode prefill decode cache memory cache latency prefill tokens tokens prefill attention attention tokens latency memory prefill prefill layers tokens attention cache prefill memory memory tokens layers latency memory memory decode tokens layers tokens memory prefill attention decode layers prefill cache latency layers layers latency cache prefill memory layers prefill latency decode cache memory cache cache attention tokens prefill attention prefill layers tokens latency memory decode cache prefill layers decode attention cache cache attention decode attention memory latency prefill prefill attention prefill layers attention prefill cache cache latency attention latency prefill latency prefill layers memory decode latency cache layers cache prefill decode attention cache decode decode cache prefill memory attention latency memory tokens attention attention memory prefill memory decode memory attention cache tokens memory prefill memory cache tokens tokens cache latency prefill attention latency layers latency prefill cache latency tokens cache cache memory latency memory latency cache decode decode decode decode cache decode prefill prefill cache layers memory attention latency decode memory layers prefill attention latency cache tokens cache latency decode memory attention memory decode memory attention prefill prefill layers tokens tokens attention layers decode layers prefill prefill tokens cache prefill tokens tokens latency attention memory latency layers layers memory latency cache memory latency memory layers tokens layers decode cache tokens prefill decode layers attention latency attention attention memory latency prefill cache memory decode layers prefill\nTrial 1101. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 583,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.1364854319999722,
+      "tpot_estimate_seconds": 0.01539774548819255,
+      "elapsed_seconds": 2.092450117000226,
+      "output_tokens_per_second": 61.172306551089065,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 1102,
+      "prompt": "Trial 1102. Context to read: tokens latency memory memory tokens prefill cache latency memory prefill latency attention attention cache attention decode memory prefill latency cache layers memory latency memory layers attention decode prefill latency latency attention prefill cache prefill memory prefill memory cache memory cache attention tokens cache cache latency attention attention memory prefill layers cache decode tokens decode decode layers memory decode layers layers cache tokens prefill memory layers decode decode tokens prefill latency latency attention layers attention latency attention layers cache tokens decode attention cache prefill prefill attention prefill layers attention tokens prefill prefill tokens latency tokens memory cache decode prefill decode memory latency attention prefill prefill latency memory latency latency decode cache cache decode decode decode memory memory memory cache prefill prefill decode decode attention layers latency attention tokens decode prefill cache prefill attention attention prefill layers cache latency latency latency attention attention prefill attention prefill latency decode prefill attention cache tokens memory tokens tokens tokens attention layers attention tokens prefill latency layers cache attention cache latency layers latency decode tokens attention tokens cache memory decode cache memory attention latency tokens attention decode memory cache cache decode memory prefill layers attention tokens tokens prefill cache decode decode tokens decode memory layers attention attention attention tokens tokens prefill prefill attention attention attention decode cache attention decode attention attention decode memory layers attention cache attention memory memory layers memory latency latency attention tokens cache prefill layers attention decode prefill prefill memory decode decode decode prefill layers decode latency cache prefill prefill latency tokens attention attention decode attention tokens decode tokens tokens cache prefill prefill attention memory tokens prefill latency prefill memory attention memory cache memory tokens memory attention decode memory decode prefill prefill decode tokens memory memory memory tokens cache tokens cache prefill decode latency decode cache cache tokens decode decode latency cache cache latency decode layers decode layers memory cache layers cache decode layers prefill memory attention decode cache cache cache cache memory prefill memory prefill decode layers cache tokens layers layers decode decode attention attention tokens layers layers memory cache tokens cache cache decode prefill decode latency attention decode prefill latency layers memory attention decode attention layers tokens layers memory cache tokens attention tokens layers latency decode cache cache prefill attention layers latency attention attention layers tokens attention layers decode tokens decode attention prefill cache decode prefill layers prefill latency cache latency decode tokens memory tokens cache memory prefill memory latency latency prefill attention cache memory decode memory latency layers latency cache memory layers prefill tokens latency decode attention decode tokens tokens layers layers attention memory latency latency cache latency layers memory memory latency memory attention layers prefill layers prefill tokens latency prefill memory memory attention attention attention attention prefill prefill tokens\nTrial 1102. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 579,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.1388102409991916,
+      "tpot_estimate_seconds": 0.015402199275597486,
+      "elapsed_seconds": 2.0953553949993875,
+      "output_tokens_per_second": 61.08748917032159,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 1103,
+      "prompt": "Trial 1103. Context to read: attention tokens decode tokens decode attention prefill latency memory attention decode layers memory cache latency cache latency memory decode decode memory decode attention prefill tokens cache layers latency layers prefill layers layers latency decode decode prefill cache memory decode decode layers attention attention attention tokens decode tokens tokens cache cache decode memory latency decode latency decode cache prefill attention memory attention prefill cache attention attention prefill cache attention attention attention decode cache memory latency memory memory cache latency decode layers tokens cache memory memory decode layers latency cache decode decode decode cache layers decode memory attention latency attention layers cache latency tokens layers latency attention decode layers prefill cache layers cache decode attention decode attention prefill decode attention latency decode memory prefill decode attention decode cache attention cache prefill latency cache layers layers tokens prefill layers cache latency memory latency latency decode prefill memory decode attention attention memory cache layers layers cache prefill attention layers decode memory cache prefill memory layers latency decode prefill tokens prefill decode layers latency layers tokens prefill memory tokens decode tokens prefill decode decode attention tokens cache decode cache attention tokens latency tokens attention layers latency tokens prefill latency decode decode prefill layers cache layers latency tokens decode layers attention memory layers memory layers decode latency cache tokens latency cache memory memory latency attention latency prefill decode decode attention memory attention attention latency latency attention cache tokens memory attention tokens latency decode memory tokens decode attention attention prefill attention latency cache layers prefill prefill decode memory prefill prefill prefill tokens layers latency attention prefill cache tokens memory attention decode latency latency layers layers layers layers cache layers tokens attention decode attention decode attention layers decode latency attention decode latency tokens decode memory attention layers latency prefill memory layers attention tokens decode tokens cache prefill prefill tokens prefill cache tokens latency cache prefill decode cache latency tokens prefill tokens attention layers attention attention latency latency cache decode prefill memory attention cache tokens layers tokens layers decode latency attention tokens prefill attention layers layers layers prefill cache cache tokens memory attention attention prefill memory layers attention prefill prefill attention decode prefill prefill latency latency attention decode layers layers latency prefill memory cache decode tokens layers memory layers layers decode attention tokens memory attention latency tokens attention cache decode layers cache latency layers cache layers memory memory prefill attention prefill memory decode decode latency layers layers memory attention tokens latency tokens decode layers prefill latency decode prefill prefill memory decode prefill attention layers tokens cache tokens memory decode latency attention tokens memory layers memory cache cache decode tokens attention tokens memory decode tokens layers memory cache tokens layers cache decode prefill cache decode prefill prefill attention cache cache\nTrial 1103. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 571,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.13454471200020635,
+      "tpot_estimate_seconds": 0.015416377055112744,
+      "elapsed_seconds": 2.0929032140002164,
+      "output_tokens_per_second": 61.15906323032995,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    },
+    {
+      "bucket": "long",
+      "trial": 1104,
+      "prompt": "Trial 1104. Context to read: memory decode tokens tokens tokens cache layers cache attention attention decode latency cache layers tokens cache cache attention tokens latency tokens cache prefill decode prefill memory memory cache cache latency tokens latency layers attention prefill latency latency memory prefill prefill decode memory latency layers memory prefill tokens decode memory cache latency attention prefill attention latency cache attention cache tokens prefill memory prefill latency memory latency layers cache layers latency tokens cache cache latency decode layers tokens prefill cache memory tokens memory memory memory latency prefill attention latency latency latency prefill latency decode decode decode memory latency memory decode attention memory prefill tokens attention memory cache memory prefill attention tokens decode tokens cache latency memory memory prefill cache memory latency prefill decode attention tokens attention tokens tokens layers attention decode attention layers decode latency prefill prefill memory latency latency cache layers memory memory prefill tokens tokens decode tokens latency memory tokens cache prefill memory layers prefill prefill layers latency layers attention prefill layers tokens prefill decode tokens memory latency memory attention decode memory latency attention prefill memory layers decode attention memory memory cache latency layers tokens prefill prefill memory latency layers cache layers memory tokens latency cache tokens latency cache attention layers decode decode latency memory latency latency layers attention memory prefill memory latency memory layers cache prefill prefill tokens cache layers tokens latency prefill latency prefill cache layers attention latency latency prefill memory tokens latency memory prefill prefill prefill latency decode cache tokens memory tokens memory prefill decode latency layers decode decode decode latency latency prefill cache decode tokens latency memory decode decode layers latency latency layers layers layers cache latency cache prefill cache latency latency cache tokens prefill memory latency layers layers tokens attention prefill latency tokens cache decode prefill decode tokens layers tokens memory attention memory prefill decode tokens layers prefill tokens decode layers layers memory decode memory attention decode tokens tokens latency attention latency attention attention layers cache layers prefill decode layers latency layers memory cache latency prefill cache attention layers cache cache cache layers attention tokens cache prefill layers decode tokens latency memory memory decode latency cache memory layers layers cache layers attention layers attention memory tokens memory prefill tokens decode layers cache prefill memory decode decode layers attention memory latency memory decode prefill cache memory layers attention cache attention layers layers memory memory prefill cache decode decode latency attention latency latency prefill decode prefill prefill latency memory tokens prefill decode memory tokens layers attention prefill latency layers decode cache cache tokens layers latency latency latency memory latency decode cache latency cache layers tokens attention layers decode cache layers layers latency latency prefill prefill attention tokens attention cache tokens decode tokens prefill cache attention layers latency\nTrial 1104. Explain how a transformer uses a KV cache during autoregressive inference. Give a detailed technical explanation.",
+      "prompt_tokens": 577,
+      "output_limit": 128,
+      "completion_tokens": 128,
+      "finish_reason": "length",
+      "content_chunks": 128,
+      "ttft_seconds": 0.13918284499959555,
+      "tpot_estimate_seconds": 0.015422340566927475,
+      "elapsed_seconds": 2.0982696349992693,
+      "output_tokens_per_second": 61.00264611609107,
+      "gpu_memory_before": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      },
+      "gpu_memory_after": {
+        "used_mib": 11681,
+        "total_mib": 15360
+      }
+    }
+  ]
+}
