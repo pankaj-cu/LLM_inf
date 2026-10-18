@@ -1,0 +1,19 @@
+{
+  "recorded_at_utc": "2026-10-17T17:28:59.438390+00:00",
+  "route": "Codespaces gateway -> Cloudflare Tunnel -> Colab bridge -> vLLM",
+  "model_id": "openinfer-qwen",
+  "backend_model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "elapsed_seconds": 0.4598026840003513,
+  "request_id": "req_27658a1e3ce34c6f93e7ae6103946793",
+  "completion_tokens": 10,
+  "response": "Hello! How can I assist you today?",
+  "gateway_metrics": {
+    "total_requests": 1,
+    "completed_requests": 1,
+    "failed_requests": 0,
+    "active_requests": 0,
+    "pending_requests": 0,
+    "latency_p50_seconds": 0.45504976299980626,
+    "latency_p95_seconds": 0.45504976299980626
+  }
+}

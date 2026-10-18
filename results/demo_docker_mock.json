@@ -1,0 +1,30 @@
+{
+  "recorded_at_utc": "2026-10-17T18:25:37.974773+00:00",
+  "backend_mode": "mock",
+  "ready": {
+    "status": "ready",
+    "backend_mode": "mock"
+  },
+  "models": [
+    "openinfer-qwen"
+  ],
+  "chat_model": "openinfer-qwen",
+  "chat_content": "Mock backend received: Hello OpenInfer. Reply in one short sentence.",
+  "chat_elapsed_seconds": 0.004827321999982814,
+  "chat_request_id": "req_6934dec765974aea9090544850a4fadf",
+  "completion_tokens": 0,
+  "invalid_key_status": null,
+  "metrics": {
+    "total_requests": 1,
+    "completed_requests": 1,
+    "failed_requests": 0,
+    "active_requests": 0,
+    "pending_requests": 0,
+    "peak_active_requests": 1,
+    "peak_pending_requests": 1,
+    "latency_p50_seconds": 6.540300000779098e-05,
+    "latency_p95_seconds": 6.540300000779098e-05,
+    "queue_wait_p50_seconds": 1.7902999388752505e-05,
+    "queue_wait_p95_seconds": 1.7902999388752505e-05
+  }
+}

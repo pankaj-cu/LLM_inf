@@ -1,0 +1,1 @@
+"""OpenInfer API application."""

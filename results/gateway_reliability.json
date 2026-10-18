@@ -1,0 +1,81 @@
+{
+  "recorded_at_utc": "2026-10-17T18:10:22.324338+00:00",
+  "scenarios": {
+    "healthy_readiness": {
+      "status_code": 200,
+      "elapsed_seconds": 0.016154152000126487,
+      "error_code": null,
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "invalid_key_chat": {
+      "status_code": 401,
+      "elapsed_seconds": 0.0018712430000960012,
+      "error_code": "invalid_api_key",
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "healthy_chat": {
+      "status_code": 200,
+      "elapsed_seconds": 0.003167984999890905,
+      "error_code": null,
+      "request_id_header": "req_5bf5ed31e4ba4162ba06156de5bb6234",
+      "request_id_body": null
+    },
+    "slow_readiness": {
+      "status_code": 503,
+      "elapsed_seconds": 0.300215085999298,
+      "error_code": null,
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "slow_models": {
+      "status_code": 504,
+      "elapsed_seconds": 0.30110866100039857,
+      "error_code": "backend_timeout",
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "slow_chat": {
+      "status_code": 504,
+      "elapsed_seconds": 0.4014628619997893,
+      "error_code": "request_timeout",
+      "request_id_header": "req_a7156e35f2194b0b986a2110febda916",
+      "request_id_body": "req_a7156e35f2194b0b986a2110febda916"
+    },
+    "unavailable_readiness": {
+      "status_code": 503,
+      "elapsed_seconds": 0.0022133120000944473,
+      "error_code": null,
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "unavailable_models": {
+      "status_code": 503,
+      "elapsed_seconds": 0.0015921320000416017,
+      "error_code": "backend_unavailable",
+      "request_id_header": null,
+      "request_id_body": null
+    },
+    "unavailable_chat": {
+      "status_code": 503,
+      "elapsed_seconds": 0.0017903210000440595,
+      "error_code": "backend_error",
+      "request_id_header": "req_118473c4abd042c1a4e836b89d4e0e18",
+      "request_id_body": "req_118473c4abd042c1a4e836b89d4e0e18"
+    }
+  },
+  "metrics": {
+    "total_requests": 3,
+    "completed_requests": 1,
+    "failed_requests": 2,
+    "active_requests": 0,
+    "pending_requests": 0,
+    "peak_active_requests": 1,
+    "peak_pending_requests": 1,
+    "latency_p50_seconds": 0.0020084170000700396,
+    "latency_p95_seconds": 0.3996949769998537,
+    "queue_wait_p50_seconds": 1.3315000614966266e-05,
+    "queue_wait_p95_seconds": 1.5989999155863188e-05
+  }
+}

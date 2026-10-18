@@ -1,0 +1,614 @@
+{
+  "recorded_at_utc": "2026-10-17T17:39:24.218510+00:00",
+  "target": "gateway",
+  "model": "openinfer-qwen",
+  "prompt_template": "Explain one practical use of a transformer KV cache in one short sentence. Request number {number}.",
+  "max_tokens": 32,
+  "temperature": 0,
+  "warmup_requests": 2,
+  "requests_per_level": 16,
+  "gateway_settings": {
+    "max_active_requests": 16,
+    "max_pending_requests": 8,
+    "rate_limit_per_minute": 1000
+  },
+  "gateway_metrics_after_run": {
+    "total_requests": 66,
+    "completed_requests": 66,
+    "failed_requests": 0,
+    "active_requests": 0,
+    "pending_requests": 0,
+    "peak_active_requests": 16,
+    "peak_pending_requests": 1,
+    "latency_p50_seconds": 0.7744149350000953,
+    "latency_p95_seconds": 1.2940548640008274,
+    "queue_wait_p50_seconds": 6.45199997961754e-06,
+    "queue_wait_p95_seconds": 9.377999958815053e-06
+  },
+  "levels": [
+    {
+      "concurrency": 1,
+      "request_count": 16,
+      "batch_seconds": 11.733582679999927,
+      "successful_requests": 16,
+      "error_rate": 0.0,
+      "status_counts": {
+        "200": 16
+      },
+      "requests_per_second": 1.3636073854298778,
+      "output_tokens_per_second": 43.63543633375609,
+      "latency_p50_seconds": 0.7269898220001778,
+      "latency_p95_seconds": 0.776315760000216,
+      "queue_wait_p50_seconds": 6e-06,
+      "queue_wait_p95_seconds": 9e-06,
+      "raw_requests": [
+        {
+          "request_number": 0,
+          "status_code": 200,
+          "elapsed_seconds": 0.714992797999912,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_b8efab83de6b407489e84dc75cb9832a"
+        },
+        {
+          "request_number": 1,
+          "status_code": 200,
+          "elapsed_seconds": 0.7457205239998075,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_533cfe0fa29b4eaf9d80dd9c30ede9c0"
+        },
+        {
+          "request_number": 2,
+          "status_code": 200,
+          "elapsed_seconds": 0.7194339590005256,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_78934570f22f42fcb4a0b1d5d71af33e"
+        },
+        {
+          "request_number": 3,
+          "status_code": 200,
+          "elapsed_seconds": 0.7434217729996817,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_f95c3bf044ef4186ae4a4e033a700fc5"
+        },
+        {
+          "request_number": 4,
+          "status_code": 200,
+          "elapsed_seconds": 0.7249649529994713,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_839a336bbd354053a7d85e1a67de49d1"
+        },
+        {
+          "request_number": 5,
+          "status_code": 200,
+          "elapsed_seconds": 0.7420868690005591,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_8d0d85afae36495aab098431c8a50d57"
+        },
+        {
+          "request_number": 6,
+          "status_code": 200,
+          "elapsed_seconds": 0.7237842099993941,
+          "queue_wait_seconds": 9e-06,
+          "completion_tokens": 32,
+          "request_id": "req_feaebad62b4f450f9d35e97ae0a032c9"
+        },
+        {
+          "request_number": 7,
+          "status_code": 200,
+          "elapsed_seconds": 0.7260440460004247,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_ce53a4eae73d46b697123e2c4889b54a"
+        },
+        {
+          "request_number": 8,
+          "status_code": 200,
+          "elapsed_seconds": 0.7496039200004816,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_698531cc7b354e13866c174c3785e770"
+        },
+        {
+          "request_number": 9,
+          "status_code": 200,
+          "elapsed_seconds": 0.7332852339995952,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_9f0a084c0fd74dac88396e40406855c0"
+        },
+        {
+          "request_number": 10,
+          "status_code": 200,
+          "elapsed_seconds": 0.7299277960000836,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_faa9f4db77b449b49268a873134722aa"
+        },
+        {
+          "request_number": 11,
+          "status_code": 200,
+          "elapsed_seconds": 0.7245737900002496,
+          "queue_wait_seconds": 9e-06,
+          "completion_tokens": 32,
+          "request_id": "req_0f3e4c1a43784143859452c63d98e675"
+        },
+        {
+          "request_number": 12,
+          "status_code": 200,
+          "elapsed_seconds": 0.7210256700000173,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_b07838e3497d4c88bdf297b6b0e77cc5"
+        },
+        {
+          "request_number": 13,
+          "status_code": 200,
+          "elapsed_seconds": 0.7303985340004147,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_d5bf84ab693c47e09024317c4b3694d6"
+        },
+        {
+          "request_number": 14,
+          "status_code": 200,
+          "elapsed_seconds": 0.7269898220001778,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_628f35f3789942f093f500ebba17a02b"
+        },
+        {
+          "request_number": 15,
+          "status_code": 200,
+          "elapsed_seconds": 0.776315760000216,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_36ae883d5b794e44b1b259e604e352cb"
+        }
+      ]
+    },
+    {
+      "concurrency": 4,
+      "request_count": 16,
+      "batch_seconds": 3.5773319939999055,
+      "successful_requests": 16,
+      "error_rate": 0.0,
+      "status_counts": {
+        "200": 16
+      },
+      "requests_per_second": 4.472606967101758,
+      "output_tokens_per_second": 143.12342294725624,
+      "latency_p50_seconds": 0.7683658619998823,
+      "latency_p95_seconds": 1.3013367210005526,
+      "queue_wait_p50_seconds": 6e-06,
+      "queue_wait_p95_seconds": 3.5e-05,
+      "raw_requests": [
+        {
+          "request_number": 0,
+          "status_code": 200,
+          "elapsed_seconds": 0.756773764999707,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_5f91b80a13cc4d01a96e4125758bb78b"
+        },
+        {
+          "request_number": 1,
+          "status_code": 200,
+          "elapsed_seconds": 1.1736135589999321,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_38968846cf3b4983b91bbdd4cb88b596"
+        },
+        {
+          "request_number": 2,
+          "status_code": 200,
+          "elapsed_seconds": 1.3013367210005526,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_91da2ebc8f7f4652aa5cff2fab2daddc"
+        },
+        {
+          "request_number": 3,
+          "status_code": 200,
+          "elapsed_seconds": 1.174210103000405,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_c453b49e2b1141bb92e35c9a4cf48f09"
+        },
+        {
+          "request_number": 4,
+          "status_code": 200,
+          "elapsed_seconds": 0.7717653669997162,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_e5c6ed1d8b7d421ca5859bd1765eda9a"
+        },
+        {
+          "request_number": 5,
+          "status_code": 200,
+          "elapsed_seconds": 0.771696358000554,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_48ccc1f3fbba49a3ba28e9b1b3e03ed7"
+        },
+        {
+          "request_number": 6,
+          "status_code": 200,
+          "elapsed_seconds": 0.7580945280005835,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_c5df2fffd3624abb9f8793c657bb5a88"
+        },
+        {
+          "request_number": 7,
+          "status_code": 200,
+          "elapsed_seconds": 0.7495114980001745,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_927f3faff6ef477594ab9e50ebe5b503"
+        },
+        {
+          "request_number": 8,
+          "status_code": 200,
+          "elapsed_seconds": 0.7495127320007668,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_1eec38828e5643278bafcffffe0ba145"
+        },
+        {
+          "request_number": 9,
+          "status_code": 200,
+          "elapsed_seconds": 0.779570878999948,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_ce0cfa46f99c4428b80094a9a007f0a8"
+        },
+        {
+          "request_number": 10,
+          "status_code": 200,
+          "elapsed_seconds": 0.7683658619998823,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_80eb6b0dd8da4cd3bfe42214ed10e2c2"
+        },
+        {
+          "request_number": 11,
+          "status_code": 200,
+          "elapsed_seconds": 0.7644408389996897,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_e77d1efe1f7b4baf832af1999d92074c"
+        },
+        {
+          "request_number": 12,
+          "status_code": 200,
+          "elapsed_seconds": 0.7490126810007496,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_62b65d1efbf9473cac2ef1ba617bd5fd"
+        },
+        {
+          "request_number": 13,
+          "status_code": 200,
+          "elapsed_seconds": 0.7832254559998546,
+          "queue_wait_seconds": 3.5e-05,
+          "completion_tokens": 32,
+          "request_id": "req_43237b2f98aa46e483e0ea7f052a5798"
+        },
+        {
+          "request_number": 14,
+          "status_code": 200,
+          "elapsed_seconds": 0.7763872120003725,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_b35635b49ea44a0596179eee3cb08765"
+        },
+        {
+          "request_number": 15,
+          "status_code": 200,
+          "elapsed_seconds": 0.7609646549999525,
+          "queue_wait_seconds": 9e-06,
+          "completion_tokens": 32,
+          "request_id": "req_c67fdec468da4273a217268f6b14ca61"
+        }
+      ]
+    },
+    {
+      "concurrency": 8,
+      "request_count": 16,
+      "batch_seconds": 1.9710029520001626,
+      "successful_requests": 16,
+      "error_rate": 0.0,
+      "status_counts": {
+        "200": 16
+      },
+      "requests_per_second": 8.117694589834729,
+      "output_tokens_per_second": 259.7662268747113,
+      "latency_p50_seconds": 0.8008578099997976,
+      "latency_p95_seconds": 1.2012745089996315,
+      "queue_wait_p50_seconds": 5e-06,
+      "queue_wait_p95_seconds": 8e-06,
+      "raw_requests": [
+        {
+          "request_number": 0,
+          "status_code": 200,
+          "elapsed_seconds": 0.7609438210001827,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_8fc9daae3eff4a67afa4abea58e37fda"
+        },
+        {
+          "request_number": 1,
+          "status_code": 200,
+          "elapsed_seconds": 0.8112703179995151,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_3577d85730d04b3da040ad39708464f5"
+        },
+        {
+          "request_number": 2,
+          "status_code": 200,
+          "elapsed_seconds": 0.8177807800002483,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_27402cebf9b64556ae9fd8d633141651"
+        },
+        {
+          "request_number": 3,
+          "status_code": 200,
+          "elapsed_seconds": 1.20063274200038,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_d97224aaea95460cacef004266b0276f"
+        },
+        {
+          "request_number": 4,
+          "status_code": 200,
+          "elapsed_seconds": 0.7870095710004534,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_f67d2818c28c4e328877f870363cd9ea"
+        },
+        {
+          "request_number": 5,
+          "status_code": 200,
+          "elapsed_seconds": 1.2012745089996315,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_39c9489378264a95a1fcb233e56e6b98"
+        },
+        {
+          "request_number": 6,
+          "status_code": 200,
+          "elapsed_seconds": 0.8023851730004026,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_83a8f72aadb14eaab27461e4d03b9411"
+        },
+        {
+          "request_number": 7,
+          "status_code": 200,
+          "elapsed_seconds": 0.7708964559997185,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_8eccf250f6c64666b2543623ac7669a7"
+        },
+        {
+          "request_number": 8,
+          "status_code": 200,
+          "elapsed_seconds": 0.8480390960003206,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_016c1f8be7fc44f585598a3e4634d48a"
+        },
+        {
+          "request_number": 9,
+          "status_code": 200,
+          "elapsed_seconds": 0.7770138260002568,
+          "queue_wait_seconds": 4e-06,
+          "completion_tokens": 32,
+          "request_id": "req_a04c91721d844fce99d1c0e4357bcd49"
+        },
+        {
+          "request_number": 10,
+          "status_code": 200,
+          "elapsed_seconds": 0.7879431169994859,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_b8be5b64fc2b45c6927212ba89d9d367"
+        },
+        {
+          "request_number": 11,
+          "status_code": 200,
+          "elapsed_seconds": 0.8237299919992438,
+          "queue_wait_seconds": 4e-06,
+          "completion_tokens": 32,
+          "request_id": "req_41f134111e5445d8b260b473eba73e3c"
+        },
+        {
+          "request_number": 12,
+          "status_code": 200,
+          "elapsed_seconds": 0.8206315679999534,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_805d2913961f4900af54819c40334d99"
+        },
+        {
+          "request_number": 13,
+          "status_code": 200,
+          "elapsed_seconds": 0.8008578099997976,
+          "queue_wait_seconds": 4e-06,
+          "completion_tokens": 32,
+          "request_id": "req_154c23d1b8674086b381b0f723d4e129"
+        },
+        {
+          "request_number": 14,
+          "status_code": 200,
+          "elapsed_seconds": 0.7691541009999128,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_7f1bee7197074365a80ef8c5d1dce718"
+        },
+        {
+          "request_number": 15,
+          "status_code": 200,
+          "elapsed_seconds": 0.7635558639994997,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_480aa8d025be41d9a988413d791517c7"
+        }
+      ]
+    },
+    {
+      "concurrency": 16,
+      "request_count": 16,
+      "batch_seconds": 1.3819162149993645,
+      "successful_requests": 16,
+      "error_rate": 0.0,
+      "status_counts": {
+        "200": 16
+      },
+      "requests_per_second": 11.578125957518603,
+      "output_tokens_per_second": 370.5000306405953,
+      "latency_p50_seconds": 0.8744539729996177,
+      "latency_p95_seconds": 1.3784683110006881,
+      "queue_wait_p50_seconds": 7e-06,
+      "queue_wait_p95_seconds": 1.4e-05,
+      "raw_requests": [
+        {
+          "request_number": 0,
+          "status_code": 200,
+          "elapsed_seconds": 0.7863642490001439,
+          "queue_wait_seconds": 8e-06,
+          "completion_tokens": 32,
+          "request_id": "req_cd174bb546934969b4b485a0cd1a11c4"
+        },
+        {
+          "request_number": 1,
+          "status_code": 200,
+          "elapsed_seconds": 1.3543075529996713,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_9bc664ad2b5648dcb697054a74edc3b4"
+        },
+        {
+          "request_number": 2,
+          "status_code": 200,
+          "elapsed_seconds": 0.8663194399996428,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_c5150b6988094be38ccc3d3f70ded4a3"
+        },
+        {
+          "request_number": 3,
+          "status_code": 200,
+          "elapsed_seconds": 0.8463291769994612,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_36e31f8a0335458cae3050ecb710334c"
+        },
+        {
+          "request_number": 4,
+          "status_code": 200,
+          "elapsed_seconds": 0.8019029920005778,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_f63aef2ffc774d8c9eca29fd82dcef86"
+        },
+        {
+          "request_number": 5,
+          "status_code": 200,
+          "elapsed_seconds": 0.8761507199997141,
+          "queue_wait_seconds": 5e-06,
+          "completion_tokens": 32,
+          "request_id": "req_cf964189135540128ce265a8081ef0c1"
+        },
+        {
+          "request_number": 6,
+          "status_code": 200,
+          "elapsed_seconds": 0.8418944189998001,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_031ab986287b4c16be174ba77a05dbe3"
+        },
+        {
+          "request_number": 7,
+          "status_code": 200,
+          "elapsed_seconds": 0.8744539729996177,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_04eb304fd8274f0787ec6111c500419b"
+        },
+        {
+          "request_number": 8,
+          "status_code": 200,
+          "elapsed_seconds": 0.8997895239999707,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_f81132b6ef984c33b0c50d849a2a8371"
+        },
+        {
+          "request_number": 9,
+          "status_code": 200,
+          "elapsed_seconds": 1.3784683110006881,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_b313ee918b314720b3ad5d3c63e00207"
+        },
+        {
+          "request_number": 10,
+          "status_code": 200,
+          "elapsed_seconds": 0.9068731659999685,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_5b38252071e34a7d941279698fae6ea6"
+        },
+        {
+          "request_number": 11,
+          "status_code": 200,
+          "elapsed_seconds": 0.8865210250005475,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_59fb9fe8b1844006b6f895b7e9ec0352"
+        },
+        {
+          "request_number": 12,
+          "status_code": 200,
+          "elapsed_seconds": 0.8132933339993542,
+          "queue_wait_seconds": 6e-06,
+          "completion_tokens": 32,
+          "request_id": "req_ce20be3280264fbebbf0ec6315e7a554"
+        },
+        {
+          "request_number": 13,
+          "status_code": 200,
+          "elapsed_seconds": 0.8357418149998921,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_26f2ce875bee42838ba995f2af0b3cf5"
+        },
+        {
+          "request_number": 14,
+          "status_code": 200,
+          "elapsed_seconds": 1.3175540909996926,
+          "queue_wait_seconds": 1.4e-05,
+          "completion_tokens": 32,
+          "request_id": "req_87dcf9058c2b4fde8a66a9d1be935ee8"
+        },
+        {
+          "request_number": 15,
+          "status_code": 200,
+          "elapsed_seconds": 1.3235993349999262,
+          "queue_wait_seconds": 7e-06,
+          "completion_tokens": 32,
+          "request_id": "req_f5ac0701e8634f0b871defa31741edff"
+        }
+      ]
+    }
+  ]
+}

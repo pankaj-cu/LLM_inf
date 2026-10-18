@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+.venv
+**/__pycache__
+**/*.py[cod]
+*.zip
+*.json
+*.ipynb
+notebooks
+results
+scripts
+STAGE*.md
+OpenInfer_Final_Roadmap_v3.txt
