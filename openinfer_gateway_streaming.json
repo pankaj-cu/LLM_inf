@@ -1,0 +1,23 @@
+{
+  "recorded_at_utc": "2026-10-18T12:40:19.241413+00:00",
+  "path": "Colab Python SDK -> Colab localhost OpenInfer gateway -> Colab localhost vLLM",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "public_model_id": "openinfer-qwen",
+  "environment": {
+    "python": "3.13.15",
+    "gpu": "Tesla T4",
+    "vllm": "0.32.0"
+  },
+  "request": {
+    "max_tokens": 32,
+    "temperature": 0,
+    "stream": true
+  },
+  "result": {
+    "chunk_count": 32,
+    "ttft_seconds": 0.0472335499998735,
+    "total_seconds": 0.5446690639996632,
+    "finish_reason": "stop",
+    "text": "A Key-Value (KV) cache stores data as key-value pairs for fast access and retrieval, optimizing performance by reducing latency and improving system scalability."
+  }
+}
