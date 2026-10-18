@@ -81,11 +81,11 @@ export PUBLIC_API_KEYS='a-separate-client-key'
 
 Leave `BACKEND_API_KEY` empty only when the vLLM server was started without `--api-key`. The public client key and backend key serve different purposes; never use the backend key as the client key. vLLM's API key does not protect every route, so keep the backend private behind the gateway or a suitable access control layer.
 
-The gateway currently supports non-streaming chat completions. It rejects `stream=true` until end-to-end SSE support is implemented and validated. Colab is an interactive compute service, not guaranteed hosting; check its current usage rules before exposing a Colab runtime through a tunnel. If a remote connection is not permitted or reliable, run the gateway and vLLM together in the Colab session for the integration demo.
+The gateway supports OpenAI-compatible `stream=true` chat completions over SSE. The local mock path and vLLM adapter have been checked with [the streaming check](scripts/check_gateway_streaming.py), including client disconnect cleanup. A [Colab-local gateway-to-vLLM streamed call](results/gateway_streaming_stage4.md) also completed through the OpenAI SDK. The Cloudflare Quick Tunnel bridge remains non-streaming, so run this path with the gateway and vLLM together in Colab. Colab is an interactive compute service, not guaranteed hosting; check its current usage rules before exposing a Colab runtime through a tunnel.
 
 ## Current scope
 
-- Implemented: mock and vLLM backends; `/health`, `/health/ready`, `/metrics`, `/v1/models`, and non-streaming `/v1/chat/completions`.
+- Implemented: mock and vLLM backends; `/health`, `/health/ready`, `/metrics`, `/v1/models`, and non-streaming or SSE streaming `/v1/chat/completions`.
 - Implemented: bearer API-key verification, per-key request rate limit, bounded admission, request deadline, request ID response header, and bounded latency sample storage.
 - Verified: Colab-local direct and gateway calls and one remote OpenAI SDK request returned Qwen responses on a Tesla T4.
 - Verified: 1/4/8/16 concurrency benchmarks for the bridge and gateway with two admission caps; raw timing records and a report are in `results/`.
@@ -93,4 +93,6 @@ The gateway currently supports non-streaming chat completions. It rejects `strea
 - Verified: [direct vLLM concurrency experiment](results/openinfer_direct_concurrency.json) with the same prompts and 1/4/8/16 levels as the remote benchmark.
 - Verified: [local gateway reliability check](results/gateway_reliability.md) for healthy, slow, and unavailable backend behavior.
 - Verified: a [one-command local mock demo](results/demo_local_mock.json) and a [Docker gateway demo](results/demo_docker_mock.json); see [DEMO.md](DEMO.md) to repeat them.
+- Verified locally: streaming chunks through the OpenAI SDK, vLLM adapter SSE parsing with a fake backend, and admission cleanup when a client disconnects.
+- Verified on GPU: one [Colab-local gateway-to-vLLM streamed response](results/gateway_streaming_stage4.md), using the [Stage 4 Colab cell](notebooks/colab_gateway_streaming_cell.py).
 - Later: cancellation verification, more detailed GPU metrics, and a dashboard.

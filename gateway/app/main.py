@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hmac
+import json
 import math
 import os
 import time
@@ -11,9 +12,20 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, Header, HTTPException, Response
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from gateway.app.backends import Backend, BackendError, MockBackend, VLLMBackend
+
+
+class ClosingStreamingResponse(StreamingResponse):
+    """Close the generator when sending stops, including on client disconnect."""
+
+    async def stream_response(self, send) -> None:
+        try:
+            await super().stream_response(send)
+        finally:
+            await self.body_iterator.aclose()
 
 
 def _int_setting(name: str, default: int, minimum: int = 1) -> int:
@@ -145,6 +157,12 @@ def create_app(backend: Backend | None = None) -> FastAPI:
         "queue_wait_seconds": [],
     }
 
+    def record_sample(name: str, value: float) -> None:
+        samples = metrics[name]
+        samples.append(value)
+        if len(samples) > 1000:
+            del samples[:-1000]
+
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
         yield
@@ -237,12 +255,12 @@ def create_app(backend: Backend | None = None) -> FastAPI:
             "data": [{**item, "id": public_model_id} for item in matches],
         }
 
-    @app.post("/v1/chat/completions")
+    @app.post("/v1/chat/completions", response_model=None)
     async def chat_completions(
         body: ChatRequest,
         response: Response,
         authorization: str | None = Header(default=None),
-    ) -> dict[str, Any]:
+    ) -> dict[str, Any] | StreamingResponse:
         key = authenticate(authorization)
         limiter.check(key)
         if body.model != public_model_id:
@@ -250,12 +268,6 @@ def create_app(backend: Backend | None = None) -> FastAPI:
                 "error": {"message": f"Model '{body.model}' is not available",
                           "type": "invalid_request_error", "code": "model_not_found"}
             })
-        if body.stream:
-            raise HTTPException(status_code=501, detail={
-                "error": {"message": "Streaming is not enabled yet", "type": "invalid_request_error",
-                          "code": "streaming_not_supported"}
-            })
-
         request_id = "req_" + uuid.uuid4().hex
         response.headers["X-Request-ID"] = request_id
         payload = body.model_dump(exclude_none=True)
@@ -264,13 +276,92 @@ def create_app(backend: Backend | None = None) -> FastAPI:
         )
         started = time.perf_counter()
         metrics["total_requests"] += 1
+        if body.stream:
+            deadline = started + timeout_seconds
+            slot = admission.slot()
+            acquired = False
+            stream = None
+            try:
+                queue_wait = await asyncio.wait_for(
+                    slot.__aenter__(), timeout=max(0, deadline - time.perf_counter())
+                )
+                acquired = True
+                record_sample("queue_wait_seconds", queue_wait)
+                stream = await asyncio.wait_for(
+                    backend.open_chat_stream(payload),
+                    timeout=max(0, deadline - time.perf_counter()),
+                )
+            except (TimeoutError, BackendError, HTTPException) as exc:
+                metrics["failed_requests"] += 1
+                record_sample("latency_seconds", time.perf_counter() - started)
+                if acquired:
+                    await slot.__aexit__(None, None, None)
+                if isinstance(exc, TimeoutError):
+                    raise HTTPException(status_code=504, detail={
+                        "error": {"message": "Request deadline exceeded", "type": "server_error",
+                                  "code": "request_timeout", "request_id": request_id}
+                    }, headers={"X-Request-ID": request_id}) from exc
+                if isinstance(exc, BackendError):
+                    raise HTTPException(status_code=exc.status_code, detail={
+                        "error": {"message": str(exc), "type": "server_error",
+                                  "code": "backend_error", "request_id": request_id}
+                    }, headers={"X-Request-ID": request_id}) from exc
+                exc.headers = {**(exc.headers or {}), "X-Request-ID": request_id}
+                raise
+            except asyncio.CancelledError:
+                metrics["failed_requests"] += 1
+                record_sample("latency_seconds", time.perf_counter() - started)
+                if acquired:
+                    await slot.__aexit__(None, None, None)
+                raise
+
+            async def stream_body():
+                completed = False
+                counted = False
+                try:
+                    async with asyncio.timeout(max(0, deadline - time.perf_counter())):
+                        async for event in stream.events:
+                            if event == "[DONE]":
+                                metrics["completed_requests"] += 1
+                                counted = completed = True
+                                yield b"data: [DONE]\n\n"
+                                break
+                            event["model"] = public_model_id
+                            yield ("data: " + json.dumps(event, separators=(",", ":")) + "\n\n").encode()
+                        if not completed:
+                            raise BackendError("Inference backend ended the stream early", 502)
+                except (TimeoutError, BackendError) as exc:
+                    metrics["failed_requests"] += 1
+                    counted = True
+                    code = "request_timeout" if isinstance(exc, TimeoutError) else "backend_error"
+                    error = {"error": {"message": str(exc) if code == "backend_error"
+                                       else "Request deadline exceeded", "type": "server_error",
+                                       "code": code, "request_id": request_id}}
+                    yield ("event: error\ndata: " + json.dumps(error) + "\n\n").encode()
+                finally:
+                    if not counted:
+                        metrics["failed_requests"] += 1
+                    try:
+                        await stream.aclose()
+                    finally:
+                        await slot.__aexit__(None, None, None)
+                        record_sample("latency_seconds", time.perf_counter() - started)
+
+            return ClosingStreamingResponse(
+                stream_body(), media_type="text/event-stream",
+                headers={
+                    "X-Request-ID": request_id,
+                    "X-Queue-Wait-Seconds": f"{queue_wait:.6f}",
+                    "Cache-Control": "no-cache",
+                    "X-Accel-Buffering": "no",
+                },
+            )
+
         try:
             async with asyncio.timeout(timeout_seconds):
                 async with admission.slot() as queue_wait:
                     response.headers["X-Queue-Wait-Seconds"] = f"{queue_wait:.6f}"
-                    metrics["queue_wait_seconds"].append(queue_wait)
-                    if len(metrics["queue_wait_seconds"]) > 1000:
-                        del metrics["queue_wait_seconds"][:-1000]
+                    record_sample("queue_wait_seconds", queue_wait)
                     result = await backend.chat_completion(payload)
             result["model"] = public_model_id
             metrics["completed_requests"] += 1
@@ -295,9 +386,7 @@ def create_app(backend: Backend | None = None) -> FastAPI:
             metrics["failed_requests"] += 1
             raise
         finally:
-            metrics["latency_seconds"].append(time.perf_counter() - started)
-            if len(metrics["latency_seconds"]) > 1000:
-                del metrics["latency_seconds"][:-1000]
+            record_sample("latency_seconds", time.perf_counter() - started)
 
     return app
 

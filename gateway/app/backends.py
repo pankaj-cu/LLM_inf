@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from collections.abc import AsyncIterator, Awaitable, Callable
 from typing import Any, Protocol
 
 import httpx
@@ -16,7 +18,22 @@ class Backend(Protocol):
 
     async def chat_completion(self, payload: dict[str, Any]) -> dict[str, Any]: ...
 
+    async def open_chat_stream(self, payload: dict[str, Any]) -> ChatStream: ...
+
     async def close(self) -> None: ...
+
+
+class ChatStream:
+    def __init__(
+        self,
+        events: AsyncIterator[dict[str, Any] | str],
+        close: Callable[[], Awaitable[None]],
+    ) -> None:
+        self.events = events
+        self._close = close
+
+    async def aclose(self) -> None:
+        await self._close()
 
 
 class VLLMBackend:
@@ -58,6 +75,81 @@ class VLLMBackend:
         except ValueError as exc:
             raise BackendError("Inference backend returned invalid JSON", 502) from exc
 
+    async def open_chat_stream(self, payload: dict[str, Any]) -> ChatStream:
+        try:
+            request = self.client.build_request("POST", "/chat/completions", json=payload)
+            response = await self.client.send(request, stream=True)
+        except httpx.TimeoutException as exc:
+            raise BackendError("Inference backend timed out", 504) from exc
+        except httpx.HTTPError as exc:
+            raise BackendError("Inference backend is unavailable", 503) from exc
+
+        if response.is_error:
+            status_code = response.status_code
+            await response.aclose()
+            raise BackendError(
+                f"Inference backend rejected the request ({status_code})",
+                503 if status_code >= 500 else 400,
+            )
+        content_type = response.headers.get("content-type", "").split(";", 1)[0].lower()
+        if content_type != "text/event-stream":
+            await response.aclose()
+            raise BackendError("Inference backend returned a non-streaming response", 502)
+
+        async def events() -> AsyncIterator[dict[str, Any] | str]:
+            data_lines: list[str] = []
+            done = False
+
+            def parse_event() -> dict[str, Any] | str:
+                data = "\n".join(data_lines)
+                if data == "[DONE]":
+                    return data
+                try:
+                    event = json.loads(data)
+                except ValueError as exc:
+                    raise BackendError("Inference backend returned invalid stream data", 502) from exc
+                if not isinstance(event, dict):
+                    raise BackendError("Inference backend returned invalid stream data", 502)
+                if "error" in event:
+                    raise BackendError("Inference backend failed during streaming", 502)
+                return event
+
+            try:
+                async for line in response.aiter_lines():
+                    if line == "":
+                        if not data_lines:
+                            continue
+                        event = parse_event()
+                        data_lines.clear()
+                        yield event
+                        if event == "[DONE]":
+                            done = True
+                            break
+                    elif line.startswith("data:"):
+                        data_lines.append(line[5:].lstrip(" "))
+                if not done and data_lines:
+                    event = parse_event()
+                    yield event
+                    done = event == "[DONE]"
+                if not done:
+                    raise BackendError("Inference backend ended the stream early", 502)
+            except httpx.TimeoutException as exc:
+                raise BackendError("Inference backend timed out", 504) from exc
+            except httpx.HTTPError as exc:
+                raise BackendError("Inference backend is unavailable", 503) from exc
+            finally:
+                await response.aclose()
+
+        iterator = events()
+
+        async def close() -> None:
+            try:
+                await iterator.aclose()
+            finally:
+                await response.aclose()
+
+        return ChatStream(iterator, close)
+
     async def close(self) -> None:
         await self.client.aclose()
 
@@ -89,6 +181,27 @@ class MockBackend:
             }],
             "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
         }
+
+    async def open_chat_stream(self, payload: dict[str, Any]) -> ChatStream:
+        result = await self.chat_completion(payload)
+        common = {
+            "id": result["id"],
+            "object": "chat.completion.chunk",
+            "created": result["created"],
+            "model": result["model"],
+        }
+
+        async def events() -> AsyncIterator[dict[str, Any] | str]:
+            yield {**common, "choices": [{"index": 0, "delta": {"role": "assistant"},
+                                            "finish_reason": None}]}
+            yield {**common, "choices": [{"index": 0, "delta": {
+                "content": result["choices"][0]["message"]["content"]
+            }, "finish_reason": None}]}
+            yield {**common, "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]}
+            yield "[DONE]"
+
+        iterator = events()
+        return ChatStream(iterator, iterator.aclose)
 
     async def close(self) -> None:
         return None

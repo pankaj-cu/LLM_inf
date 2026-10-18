@@ -1,7 +1,7 @@
 """Restricted HTTP bridge for an optional, permitted remote Colab demo.
 
 Point a tunnel at this service, never directly at the vLLM server. It exposes
-only the two non-streaming API routes currently required by the gateway.
+only model listing and non-streaming chat for the optional remote demo.
 """
 
 from __future__ import annotations
